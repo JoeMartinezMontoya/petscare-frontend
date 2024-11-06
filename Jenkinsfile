@@ -39,7 +39,9 @@ pipeline {
     }
     post {
         always {
-            cleanWs() // Nettoyage de l'espace de travail après chaque exécution
+        node {
+            cleanWs()
+        }
         }
         success {
             echo 'Pipeline completed successfully!'
