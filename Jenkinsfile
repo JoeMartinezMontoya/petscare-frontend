@@ -1,5 +1,6 @@
 pipeline {
     agent any
+    tools { nodejs "NodeJS 18.20.0" }
     environment {
         GITHUB_TOKEN = credentials('github-token') // Assure-toi que l'ID correspond à celui configuré dans Jenkins
     }
