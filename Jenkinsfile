@@ -1,47 +1,45 @@
 pipeline {
     agent any
     environment {
-        GIT_SSH_KEY = credentials('GitHub-SSH-Key')
+        GITHUB_TOKEN = credentials('GitHub-Token') // Assure-toi que l'ID correspond à celui configuré dans Jenkins
     }
     stages {
         stage('Clone Repository') {
             steps {
-                sshagent([env.GIT_SSH_KEY]) {
-                    git url: 'git@github.com:ton-utilisateur/petscare-frontend.git', branch: 'main'
-                }
+                // Clonage avec le token en utilisant l'URL HTTPS
+                git url: 'https://github.com/JoeMartinezMontoya/petscare-frontend.git', 
+                    branch: 'main', 
+                    credentialsId: 'github-token'
             }
         }
         stage('Install Dependencies') {
             steps {
-                script {
-                    dir('petscare-frontend') {
-                        sh 'npm install'
-                    }
+                // Installation des dépendances
+                dir('petscare-frontend') {
+                    sh 'npm install'
                 }
             }
         }
         stage('Run Tests') {
             steps {
-                script {
-                    dir('petscare-frontend') {
-                        sh 'npm test'
-                    }
+                // Exécution des tests
+                dir('petscare-frontend') {
+                    sh 'npm test'
                 }
             }
         }
         stage('Build for Production') {
             steps {
-                script {
-                    dir('petscare-frontend') {
-                        sh 'npm run build'
-                    }
+                // Construction pour la production
+                dir('petscare-frontend') {
+                    sh 'npm run build'
                 }
             }
         }
     }
     post {
         always {
-            cleanWs()
+            cleanWs() // Nettoyage de l'espace de travail après chaque exécution
         }
         success {
             echo 'Pipeline completed successfully!'
