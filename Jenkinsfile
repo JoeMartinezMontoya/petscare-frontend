@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        GITHUB_TOKEN = credentials('GitHub-Token') // Assure-toi que l'ID correspond à celui configuré dans Jenkins
+        GITHUB_TOKEN = credentials('github-token') // Assure-toi que l'ID correspond à celui configuré dans Jenkins
     }
     stages {
         stage('Clone Repository') {
@@ -39,9 +39,7 @@ pipeline {
     }
     post {
         always {
-        node {
             cleanWs()
-        }
         }
         success {
             echo 'Pipeline completed successfully!'
