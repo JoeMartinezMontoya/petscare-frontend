@@ -1,9 +1,4 @@
 pipeline {
-    stage('Clean workspace') {
-        steps {
-            cleanWs()
-        }
-    }
     agent any
     tools { nodejs "NodeJS" }
     environment {
@@ -14,10 +9,9 @@ pipeline {
             steps {
                 script {
                     // Clonage avec le token en utilisant l'URL HTTPS
-                    git url: 'https://github.com/JoeMartinezMontoya/petscare-frontend', 
+                    git url: 'https://github.com/JoeMartinezMontoya/petscare-frontend.git', 
                         branch: 'develop', // Utiliser la branche active
-                        credentialsId: 'github-token',
-                        refspec: '+refs/heads/*:refs/remotes/origin/*' // Ajout explicite du refspec
+                        credentialsId: 'github-token'
                 }
             }
         }
