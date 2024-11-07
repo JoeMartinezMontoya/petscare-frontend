@@ -15,7 +15,7 @@ pipeline {
                 script {
                     // Clonage avec le token en utilisant l'URL HTTPS
                     git url: 'https://github.com/JoeMartinezMontoya/petscare-frontend.git', 
-                        branch: env.BRANCH_NAME, // Utiliser la branche active
+                        branch: BRANCH_NAME, // Utiliser la branche active
                         credentialsId: 'github-token'
                 }
             }
@@ -30,7 +30,7 @@ pipeline {
         }
         stage('Run Tests') {
             when {
-                expression { env.BRANCH_NAME == 'develop' || env.BRANCH_NAME.startsWith('feature/') }
+                expression { BRANCH_NAME == 'develop' || BRANCH_NAME.startsWith('feature/') }
             }
             steps {
                 // Exécution des tests uniquement pour `develop` et `feature/*`
