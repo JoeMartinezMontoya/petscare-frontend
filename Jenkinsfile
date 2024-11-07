@@ -1,23 +1,16 @@
 pipeline {
-    stage('Clean workspace') {
-        steps {
-            cleanWs()
-        }
-    }
     agent any
     tools { nodejs "NodeJS" }
     environment {
-        GITHUB_TOKEN = credentials('github-token')
+        GITHUB_TOKEN = credentials('github-token') // Assure-toi que l'ID correspond à celui configuré dans Jenkins
     }
     stages {
         stage('Clone Repository') {
             steps {
-                script {
-                    // Clonage avec le token en utilisant l'URL HTTPS
-                    git url: 'https://github.com/JoeMartinezMontoya/petscare-frontend.git', 
-                        branch: 'develop', // Utiliser la branche active
-                        credentialsId: 'github-token'
-                }
+                // Clonage avec le token en utilisant l'URL HTTPS
+                git url: 'https://github.com/JoeMartinezMontoya/petscare-frontend.git', 
+                    branch: 'develop', 
+                    credentialsId: 'github-token'
             }
         }
         stage('Install Dependencies') {
@@ -29,22 +22,16 @@ pipeline {
             }
         }
         stage('Run Tests') {
-            when {
-                expression { BRANCH_NAME == 'develop' || BRANCH_NAME.startsWith('feature/') }
-            }
             steps {
-                // Exécution des tests uniquement pour `develop` et `feature/*`
+                // Exécution des tests
                 dir('petscare-frontend') {
                     sh 'npm test'
                 }
             }
         }
         stage('Build for Production') {
-            when {
-                branch 'main' // ou 'master' si c'est ta branche de production
-            }
             steps {
-                // Construction pour la production uniquement pour la branche `main` (ou `master`)
+                // Construction pour la production
                 dir('petscare-frontend') {
                     sh 'npm run build'
                 }
