@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'PCMontserrat';
+  src: url('fonts/MontserratAlternates-ExtraBold.ttf') format('woff');
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -33,6 +38,14 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.petscare-brand {
+  font-family: 'PCMontserrat', 'sans-serif';
+}
+
+.petscare-body-bg {
+  background-image: url('https://www.transparenttextures.com/patterns/inspiration-geometry.png');
 }
 
 @media (prefers-color-scheme: dark) {
