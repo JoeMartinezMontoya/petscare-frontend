@@ -2,12 +2,10 @@ import React from 'react';
 
 export default function Home() {
   return (
-    <div className='container-fluid mt-5'>
-      <div className='bg-primary text-white p-4 rounded'>
-        <h1 className='display-4 petscare-brand'>Welcome to PetsCare!</h1>
-        <p className='lead'>
-          Votre service pour le bien-être de vos animaux de compagnie.
-        </p>
+    <div className='container-fluid mt-5 petscare-brand'>
+      <div className='bg-primary p-4 rounded'>
+        <h1 className='display-4'>Welcome to PetsCare!</h1>
+        <p>Votre service pour le bien-être de vos animaux de compagnie.</p>
         <hr className='my-4' />
         <p>
           Inscrivez-vous pour découvrir nos services et gérer les informations

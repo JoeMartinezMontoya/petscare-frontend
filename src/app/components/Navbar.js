@@ -2,11 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import '../globals.css';
 
-function Navbar() {
+export default function Navbar() {
   return (
-    <nav
-      className='navbar navbar-expand-lg bg-transparent petscare-brand'
-      data-bs-theme='dark'>
+    <nav className='navbar navbar-expand-lg bg-transparent petscare-brand'>
       <div className='container-fluid'>
         <a className='navbar-brand' href='#'>
           PetsCare
@@ -34,5 +32,3 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;

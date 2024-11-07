@@ -3,6 +3,7 @@ import 'bootswatch/dist/minty/bootstrap.min.css';
 import React from 'react';
 import { useEffect } from 'react';
 import Navbar from './components/Navbar';
+import ThemeToggle from './components/ThemeToggle';
 import Script from 'next/script';
 
 export default function RootLayout({ children }) {
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
           strategy='beforeInteractive'
         />
         <Navbar />
+        <ThemeToggle />
         {children}
       </body>
     </html>
