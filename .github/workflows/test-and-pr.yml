@@ -58,6 +58,7 @@ jobs:
 
   # 3️⃣ Job pour créer des Pull Requests automatiques
   create-pull-requests:
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     needs: run-tests
     steps:
@@ -68,14 +69,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          BRANCH=${{ github.ref }}
-          if [[ $BRANCH == refs/heads/feature/* || $BRANCH == refs/heads/bugfix/* ]]; then
+          BRANCH=${GITHUB_REF#refs/heads/}
+          echo "Branche actuelle : $BRANCH"
+
+          # Déterminer la branche cible en fonction du type de branche
+          if [[ $BRANCH == feature/* || $BRANCH == bugfix/* ]]; then
             TARGET_BRANCH=develop
-          elif [[ $BRANCH == refs/heads/hotfix/* ]]; then
+          elif [[ $BRANCH == hotfix/* ]]; then
             TARGET_BRANCH=main
           else
+            echo "Branche inconnue, pas de PR créée"
             exit 0
           fi
 
-          # Créer la Pull Request 
-          gh pr create --base $TARGET_BRANCH --title "Auto PR: $BRANCH" --body "PR automatique générée par GitHub Actions"
+          # Créer la Pull Request avec la bonne branche de base
+          echo "Créer une PR pour merger $BRANCH sur $TARGET_BRANCH"
+          gh pr create --base $TARGET_BRANCH --title "Auto PR: $BRANCH" --body "PR automatique générée par GitHub Actions" --head $BRANCH
