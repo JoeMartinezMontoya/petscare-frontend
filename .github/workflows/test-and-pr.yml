@@ -1,5 +1,9 @@
 name: GitFlow CI/CD
 
+permissions:
+  pull-requests: write
+  contents: write
+
 on:
   push:
     branches:
@@ -12,10 +16,6 @@ on:
     branches:
       - develop
       - main
-
-  permissions:
-    pull-requests: write
-    contents: write
 
 jobs:
   # 1️⃣ Job pour exécuter les tests
