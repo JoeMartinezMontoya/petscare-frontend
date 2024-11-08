@@ -1,13 +1,26 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: 'PCMontserrat';
+  src: url('fonts/MontserratAlternates-ExtraBold.ttf') format('woff');
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background-color: #ffffff;
+  --foreground-color: #171717;
+  --button-color: #007bff;
+  --color: #34495e;
+}
+
+body[data-theme='dark'] {
+  --background-color: #0a0a0a;
+  --foreground-color: #ededed;
+  --button-color: #28a745;
+  --color: #ecf0f1;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html,
@@ -17,17 +30,15 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background-color: var(--background-color);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+button {
+  background-color: var(--button-color);
+  color: var(--color) !important;
 }
 
 a {
@@ -35,8 +46,12 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.petscare-brand,
+.petscare-brand a {
+  font-family: 'PCMontserrat', 'sans-serif';
+  color: var(--foreground-color);
+}
+
+.petscare-body-bg {
+  background-image: url('https://www.transparenttextures.com/patterns/inspiration-geometry.png');
 }
