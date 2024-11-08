@@ -10,7 +10,6 @@ on:
 jobs:
   rebase-develop:
     runs-on: ubuntu-latest
-    if: github.event.head_ref == 'develop'
 
     steps:
       - name: Checkout main
@@ -27,6 +26,7 @@ jobs:
         run: git fetch --all
 
       - name: Rebase develop with main
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           git checkout develop
           git pull origin develop
