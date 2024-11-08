@@ -36,27 +36,7 @@ jobs:
       - name: Run tests
         run: npm test
 
-  # 2️⃣ Job pour créer une release quand on merge develop -> main
-  create-release:
-    runs-on: ubuntu-latest
-    needs: run-tests
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: 'v${{ github.run_number }}'
-          name: 'Release v${{ github.run_number }}'
-          body: 'Nouvelle release déployée depuis develop'
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # 3️⃣ Job pour créer des Pull Requests automatiques
+  # 2️⃣ Job pour créer des Pull Requests automatiques
   create-pull-requests:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
@@ -85,3 +65,18 @@ jobs:
           # Créer la Pull Request avec la bonne branche de base
           echo "Créer une PR pour merger $BRANCH sur $TARGET_BRANCH"
           gh pr create --base $TARGET_BRANCH --title "Auto PR: $BRANCH" --body "PR automatique générée par GitHub Actions" --head $BRANCH
+
+  # 3️⃣ Job pour supprimer la branche après la fusion de la PR
+  delete-branch:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the merged PR branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Delete branch after merge
+        run: |
+          git push origin --delete ${{ github.head_ref }}
+          echo "La branche ${{ github.head_ref }} a été supprimée avec succès."
