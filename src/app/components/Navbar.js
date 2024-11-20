@@ -26,6 +26,11 @@ export default function Navbar() {
                 Accueil
               </Link>
             </li>
+            <li>
+              <Link href='/register' className='nav-link'>
+                Inscription
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

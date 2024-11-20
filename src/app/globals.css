@@ -4,15 +4,15 @@
 }
 
 :root {
-  --background-color: #ffffff;
-  --foreground-color: #171717;
+  --background-color: #f5f6fa;
+  --foreground-color: #192a56;
   --button-color: #007bff;
   --color: #34495e;
 }
 
 body[data-theme='dark'] {
-  --background-color: #0a0a0a;
-  --foreground-color: #ededed;
+  --background-color: #192a56;
+  --foreground-color: #f5f6fa;
   --button-color: #28a745;
   --color: #ecf0f1;
 }
@@ -54,4 +54,12 @@ a {
 
 .petscare-body-bg {
   background-image: url('https://www.transparenttextures.com/patterns/inspiration-geometry.png');
+}
+
+#auth-right-side {
+  background-image: url('https://www.transparenttextures.com/patterns/fabric-plaid.png');
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  font-size: 1.1rem;
+  font-weight: bold;
 }
