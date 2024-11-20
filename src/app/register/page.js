@@ -35,20 +35,21 @@ export default function Register() {
           password: formData.password,
         }
       );
-      setSuccess(
-        'Inscription réussie ! Vous pouvez maintenant vous connecter.'
-      );
+
+      setSuccess(response.data.message || 'Inscription réussie !');
       setFormData({ email: '', password: '', confirmPassword: '' });
     } catch (err) {
-      console.log(err.code);
-      console.log(err.message);
-      console.log(err.response);
-      console.log(err.response.status == 409);
-      if (err.response.status == 409) {
-        setError('Cet utilisateur existe déjà.');
-      } else {
-        setError('Cha ipas');
-      }
+      // Récupérer le message du back-end s'il existe
+      const errorMessage =
+        err.response?.data?.error || 'Une erreur inattendue est survenue.';
+      setError(errorMessage);
+
+      // Optionnel : journaliser les détails pour le debug
+      console.error('Erreur:', {
+        code: err.code,
+        message: err.message,
+        response: err.response,
+      });
     }
   };
 
