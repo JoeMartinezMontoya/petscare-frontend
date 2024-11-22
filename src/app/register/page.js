@@ -27,14 +27,12 @@ export default function Register() {
       return;
     }
 
+    const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
     try {
-      const response = await axios.post(
-        'http://localhost:8082/api/auth/register',
-        {
-          email: formData.email,
-          password: formData.password,
-        }
-      );
+      const response = await axios.post(`${apiUrl}/api/auth/register`, {
+        email: formData.email,
+        password: formData.password,
+      });
 
       setSuccess(response.data.message || 'Inscription réussie !');
       setFormData({ email: '', password: '', confirmPassword: '' });
