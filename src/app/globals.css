@@ -56,7 +56,8 @@ a {
   background-image: url('https://www.transparenttextures.com/patterns/inspiration-geometry.png');
 }
 
-#auth-right-side {
+#auth-right-side,
+#auth-left-side {
   background-image: url('https://www.transparenttextures.com/patterns/fabric-plaid.png');
   background-color: var(--background-color);
   color: var(--foreground-color);

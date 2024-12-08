@@ -1,16 +1,18 @@
 'use client';
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext.js';
 import axios from 'axios';
 
-export default function Register() {
+export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: '',
   });
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  const { login } = useAuth(); // On récupère la fonction `login` du contexte
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,20 +24,17 @@ export default function Register() {
     setError('');
     setSuccess('');
 
-    if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas.');
-      return;
-    }
-
     const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
     try {
-      const response = await axios.post(`${apiUrl}/api/auth/register-user`, {
+      const response = await axios.post(`${apiUrl}/api/auth/login`, {
         email: formData.email,
         password: formData.password,
       });
 
-      setSuccess(response.data.message || 'Inscription réussie !');
-      setFormData({ email: '', password: '', confirmPassword: '' });
+      const token = response.data.token;
+      login(token); // On appelle la fonction login du contexte pour stocker le token
+      setSuccess(response.data.message || 'Connexion réussie !');
+      setFormData({ email: '', password: '' });
     } catch (err) {
       const errorMessage =
         err.response?.data?.error || 'Une erreur inattendue est survenue.';
@@ -51,9 +50,23 @@ export default function Register() {
 
   return (
     <div className='row mt-5'>
+      <div
+        className='col-12 col-md-6 mx-auto p-5 rounded-end-2'
+        id='auth-left-side'>
+        <h2 className='petscare-brand'>Content de vous revoir !</h2>
+        <p className='mt-4'>Est-ce que vos compagnons se portent bien ?</p>
+        <p className='mt-4'>Nous proposerons bientôt de nouveaux services</p>
+        <p className='mt-4'>
+          Suivez nous sur les réseaux pour ne pas les manquer
+        </p>
+
+        <button className='btn btn-info'>
+          Vous ne possédez pas encore de compte?
+        </button>
+      </div>
       <div className='col-12 col-md-6 mx-auto p-5'>
         <div className='row'>
-          <h2 className='petscare-brand col'>Inscription</h2>
+          <h2 className='petscare-brand col'>Connexion</h2>
           {error && (
             <div
               className='alert alert-danger alert-dismissible fade show'
@@ -117,49 +130,10 @@ export default function Register() {
             </div>
           </div>
 
-          <div className='mb-3'>
-            <label htmlFor='confirmPassword' className='form-label'>
-              Confirmer le mot de passe :
-            </label>
-            <div className='input-group'>
-              <input
-                className='form-control'
-                type='password'
-                id='confirmPassword'
-                name='confirmPassword'
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-              <span className='input-group-text'>********</span>
-            </div>
-          </div>
-
           <button type='submit' className='btn btn-success'>
-            Inscription
+            Connexion
           </button>
         </form>
-      </div>
-
-      <div
-        className='col-12 col-md-6 mx-auto p-5 rounded-start-2'
-        id='auth-right-side'>
-        <h2 className='petscare-brand'>Rejoignez-nous</h2>
-        <p className='mt-4'>
-          Intégrez une communauté bienveillante et aimante qui oeuvre pour le
-          bien-être de nos compagnons à fourrure
-        </p>
-        <p className='mt-4'>
-          Gardez ou faites gardez vos compagnons, vous pourrez vous inscrire en
-          tant que PetSitter afin de signaler aux autres membres que vous êtes
-          disponible, et vous faire recommander par cette même communauté
-        </p>
-        <p className='mt-4'>
-          Retrouvez votre compagnon ou celui des autres grâçe à notre système
-          intelligent
-        </p>
-
-        <button className='btn btn-info'>Déjà inscrit?</button>
       </div>
     </div>
   );

@@ -31,6 +31,11 @@ export default function Navbar() {
                 Inscription
               </Link>
             </li>
+            <li>
+              <Link href='/login' className='nav-link'>
+                Connexion
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
