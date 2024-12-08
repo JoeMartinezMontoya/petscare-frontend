@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext.js';
 import axios from 'axios';
 
 export default function Login() {
@@ -11,8 +10,6 @@ export default function Login() {
 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  const { login } = useAuth(); // On récupère la fonction `login` du contexte
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,27 +22,27 @@ export default function Login() {
     setSuccess('');
 
     const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
-    try {
-      const response = await axios.post(`${apiUrl}/api/auth/login`, {
+    const response = await axios
+      .post(`${apiUrl}/api/auth/login-user`, {
         email: formData.email,
         password: formData.password,
-      });
+      })
+      .then((json) => {
+        localStorage.setItem('authToken', json.data);
+        setSuccess(json.message || 'Message test');
+        setFormData({ email: '', password: '' });
+      })
+      .catch((err) => {
+        const errorMessage =
+          err.response?.data?.error || 'Une erreur inattendue est survenue.';
+        setError(errorMessage);
 
-      const token = response.data.token;
-      login(token); // On appelle la fonction login du contexte pour stocker le token
-      setSuccess(response.data.message || 'Connexion réussie !');
-      setFormData({ email: '', password: '' });
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.error || 'Une erreur inattendue est survenue.';
-      setError(errorMessage);
-
-      console.error('Erreur:', {
-        code: err.code,
-        message: err.message,
-        response: err.response,
+        console.error('Erreur:', {
+          code: err.code,
+          message: err.message,
+          response: err.response,
+        });
       });
-    }
   };
 
   return (
