@@ -1,5 +1,6 @@
 'use client';
 import { FlashMessageProvider } from './contexts/FlashMessageContext';
+import { AuthProvider } from './contexts/AuthContext';
 import FlashMessage from './components/FlashMessage';
 import ThemeToggle from './components/ThemeToggle';
 import 'bootswatch/dist/minty/bootstrap.min.css';
@@ -23,16 +24,18 @@ export default function RootLayout({ children }) {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
       </head>
       <body className='petscare-body-bg'>
-        <FlashMessageProvider>
-          <Script
-            src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'
-            strategy='beforeInteractive'
-          />
-          <Navbar />
-          <ThemeToggle />
-          <FlashMessage />
-          {children}
-        </FlashMessageProvider>
+        <AuthProvider>
+          <FlashMessageProvider>
+            <Script
+              src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js'
+              strategy='beforeInteractive'
+            />
+            <Navbar />
+            <ThemeToggle />
+            <FlashMessage />
+            {children}
+          </FlashMessageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

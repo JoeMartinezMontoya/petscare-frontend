@@ -1,8 +1,10 @@
-import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import Link from 'next/link';
+import React from 'react';
 import '../globals.css';
 
 export default function Navbar() {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <nav className='navbar navbar-expand-lg bg-transparent petscare-brand'>
       <div className='container-fluid'>
@@ -26,16 +28,28 @@ export default function Navbar() {
                 Accueil
               </Link>
             </li>
-            <li>
-              <Link href='/register' className='nav-link'>
-                Inscription
-              </Link>
-            </li>
-            <li>
-              <Link href='/login' className='nav-link'>
-                Connexion
-              </Link>
-            </li>
+            {!isAuthenticated ? (
+              <>
+                <li>
+                  <Link href='/register' className='nav-link'>
+                    Inscription
+                  </Link>
+                </li>
+                <li>
+                  <Link href='/login' className='nav-link'>
+                    Connexion
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <button onClick={logout} className='btn btn-info'>
+                    Logout
+                  </button>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
