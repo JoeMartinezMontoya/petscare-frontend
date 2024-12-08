@@ -1,8 +1,13 @@
 'use client';
+import { useFlashMessage } from '../contexts/FlashMessageContext';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import axios from 'axios';
 
 export default function Login() {
+  const router = useRouter();
+  const { addFlashMessage } = useFlashMessage();
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -29,13 +34,15 @@ export default function Login() {
       })
       .then((json) => {
         localStorage.setItem('authToken', json.data);
-        setSuccess(json.message || 'Message test');
-        setFormData({ email: '', password: '' });
+        addFlashMessage(json.message || 'Message test', 'success');
+        router.push('/');
       })
       .catch((err) => {
         const errorMessage =
           err.response?.data?.error || 'Une erreur inattendue est survenue.';
-        setError(errorMessage);
+
+        setFormData({ email: '', password: '' });
+        addFlashMessage(errorMessage, 'danger');
 
         console.error('Erreur:', {
           code: err.code,
