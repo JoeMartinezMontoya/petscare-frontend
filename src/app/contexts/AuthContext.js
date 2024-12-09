@@ -11,6 +11,11 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(!!token); // Si un token est présent, on considère l'utilisateur connecté
   }, []);
 
+  const login = (token) => {
+    localStorage.setItem('authToken', token);
+    setIsAuthenticated(true); // Met à jour l'état
+  };
+
   const logout = () => {
     localStorage.removeItem('authToken');
     setIsAuthenticated(false);
@@ -18,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, logout }}>
+      value={{ isAuthenticated, setIsAuthenticated, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

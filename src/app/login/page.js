@@ -1,11 +1,13 @@
 'use client';
 import { useFlashMessage } from '../contexts/FlashMessageContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import axios from 'axios';
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
   const { addFlashMessage } = useFlashMessage();
 
   const [formData, setFormData] = useState({
@@ -33,7 +35,7 @@ export default function Login() {
         password: formData.password,
       })
       .then((json) => {
-        localStorage.setItem('authToken', json.data);
+        login(json.data);
         addFlashMessage(json.message || 'Message test', 'success');
         router.push('/');
       })
