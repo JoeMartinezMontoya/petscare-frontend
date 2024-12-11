@@ -30,6 +30,15 @@ export default function Navbar() {
                 Accueil
               </Link>
             </li>
+            {isAuthenticated && (
+              <>
+                <li>
+                  <Link href='/user' className='nav-link'>
+                    Mon profil
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
 
           <ul className='navbar-nav ms-auto'>

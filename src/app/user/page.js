@@ -12,7 +12,7 @@ export default function UserPage() {
     const fetchUserData = async () => {
       if (isAuthenticated) {
         try {
-          const token = localStorage.getItem('authToken'); // Récupère le token stocké
+          const token = localStorage.getItem('authToken');
           const response = await axios.get(
             `${process.env.NEXT_PUBLIC_USERS_API_URL}/api/users/show-user`,
             {
@@ -21,8 +21,8 @@ export default function UserPage() {
               },
             }
           );
-          // Met à jour les données utilisateur avec la réponse
           setUserData(response.data);
+          console.log(response.data);
         } catch (error) {
           console.error(
             'Erreur lors de la récupération des données utilisateur :',
@@ -36,7 +36,7 @@ export default function UserPage() {
       }
     };
 
-    fetchUserData(); // Appelle la fonction uniquement une fois
+    fetchUserData();
   }, [isAuthenticated]);
 
   if (!isAuthenticated) {
@@ -48,21 +48,35 @@ export default function UserPage() {
   }
 
   return (
-    <div className='container mt-5'>
-      <h1 className='petscare-brand'>Mon Profil</h1>
-      {userData ? (
-        <div>
-          <p>
-            <strong>Nom :</strong> {userData.name}
-          </p>
-          <p>
-            <strong>Email :</strong> {userData.email}
-          </p>
-          {/* Tu peux ajouter plus d'informations ici */}
+    <>
+      <h1 className='petscare-brand mt-5 text-center'>
+        Prénom Nom OU Username
+      </h1>
+      <div className='row mt-5 petscare-background'>
+        <div className='col-12 col-md-6 mx-auto p-5'>
+          <div className='row'>
+            {userData ? (
+              <div>
+                <p>
+                  <strong>Id:</strong> {userData.id}
+                </p>
+                <p>
+                  <strong>Email :</strong> {userData.email}
+                </p>
+                <p>
+                  <strong>Rôle :</strong> {userData.role}
+                </p>
+                {/* Tu peux ajouter plus d'informations ici */}
+              </div>
+            ) : (
+              <p>Chargement en cours...</p>
+            )}
+          </div>
         </div>
-      ) : (
-        <p>Aucune donnée utilisateur trouvée.</p>
-      )}
-    </div>
+        <div className='col-12 col-md-6 mx-auto p-5'>
+          <h1 className='petscare-brand'>Photos ?</h1>
+        </div>
+      </div>
+    </>
   );
 }

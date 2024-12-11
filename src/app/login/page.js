@@ -15,9 +15,6 @@ export default function Login() {
     password: '',
   });
 
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -25,8 +22,6 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
 
     const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
     const response = await axios
@@ -56,9 +51,7 @@ export default function Login() {
 
   return (
     <div className='row mt-5'>
-      <div
-        className='col-12 col-md-6 mx-auto p-5 rounded-end-2'
-        id='auth-left-side'>
+      <div className='col-12 col-md-6 mx-auto p-5 rounded-end-2 petscare-background'>
         <h2 className='petscare-brand'>Content de vous revoir !</h2>
         <p className='mt-4'>Est-ce que vos compagnons se portent bien ?</p>
         <p className='mt-4'>Nous proposerons bientôt de nouveaux services</p>
@@ -73,30 +66,6 @@ export default function Login() {
       <div className='col-12 col-md-6 mx-auto p-5'>
         <div className='row'>
           <h2 className='petscare-brand col'>Connexion</h2>
-          {error && (
-            <div
-              className='alert alert-danger alert-dismissible fade show'
-              role='alert'>
-              {error}
-              <button
-                type='button'
-                className='btn-close'
-                data-bs-dismiss='alert'
-                aria-label='Close'></button>
-            </div>
-          )}
-          {success && (
-            <div
-              className='alert alert-success alert-dismissible fade show'
-              role='alert'>
-              {success}
-              <button
-                type='button'
-                className='btn-close'
-                data-bs-dismiss='alert'
-                aria-label='Close'></button>
-            </div>
-          )}
         </div>
 
         <form onSubmit={handleSubmit}>

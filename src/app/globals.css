@@ -56,11 +56,14 @@ a {
   background-image: url('https://www.transparenttextures.com/patterns/inspiration-geometry.png');
 }
 
-#auth-right-side,
-#auth-left-side {
+.petscare-background {
   background-image: url('https://www.transparenttextures.com/patterns/fabric-plaid.png');
   background-color: var(--background-color);
   color: var(--foreground-color);
   font-size: 1.1rem;
   font-weight: bold;
+}
+
+.fg-color {
+  color: var(--foreground-color);
 }

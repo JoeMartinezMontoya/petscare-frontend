@@ -1,16 +1,21 @@
 'use client';
+import { useFlashMessage } from '../contexts/FlashMessageContext';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import axios from 'axios';
 
 export default function Register() {
+  const router = useRouter();
+  const { addFlashMessage } = useFlashMessage();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
+    username: '',
+    firstname: '',
+    lastname: '',
+    birthdate: '',
   });
-
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,34 +24,29 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
-
     if (formData.password !== formData.confirmPassword) {
       setError('Les mots de passe ne correspondent pas.');
       return;
     }
 
     const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
-    try {
-      const response = await axios.post(`${apiUrl}/api/auth/register-user`, {
+    const response = await axios
+      .post(`${apiUrl}/api/auth/register-user`, {
         email: formData.email,
         password: formData.password,
+        password: formData.password,
+        username: formData.username,
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        birthdate: formData.birthdate,
+      })
+      .then((json) => {
+        addFlashMessage(json.data.detail || 'Message test', 'success');
+        router.push('/login');
+      })
+      .catch((err) => {
+        addFlashMessage(err.response.data.detail || 'Message test', 'danger');
       });
-
-      setSuccess(response.data.message || 'Inscription réussie !');
-      setFormData({ email: '', password: '', confirmPassword: '' });
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.error || 'Une erreur inattendue est survenue.';
-      setError(errorMessage);
-
-      console.error('Erreur:', {
-        code: err.code,
-        message: err.message,
-        response: err.response,
-      });
-    }
   };
 
   return (
@@ -54,35 +54,34 @@ export default function Register() {
       <div className='col-12 col-md-6 mx-auto p-5'>
         <div className='row'>
           <h2 className='petscare-brand col'>Inscription</h2>
-          {error && (
-            <div
-              className='alert alert-danger alert-dismissible fade show'
-              role='alert'>
-              {error}
-              <button
-                type='button'
-                className='btn-close'
-                data-bs-dismiss='alert'
-                aria-label='Close'></button>
-            </div>
-          )}
-          {success && (
-            <div
-              className='alert alert-success alert-dismissible fade show'
-              role='alert'>
-              {success}
-              <button
-                type='button'
-                className='btn-close'
-                data-bs-dismiss='alert'
-                aria-label='Close'></button>
-            </div>
-          )}
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form
+          onSubmit={handleSubmit}
+          className='d-flex flex-column justify-content-evenly mt-3'>
           <div className='mb-3'>
-            <label htmlFor='email' className='form-label'>
+            <label htmlFor='username' className='form-label fg-color fw-bold'>
+              Pseudonyme :
+            </label>
+            <div className='input-group'>
+              <input
+                className='form-control'
+                type='text'
+                id='username'
+                name='username'
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+              <span className='input-group-text'>SuperCutePaws99</span>
+            </div>
+            <div className='form-text fg-color fst-italic'>
+              Vous serez visible sur notre site sous ce nom
+            </div>
+          </div>
+
+          <div className='mb-3'>
+            <label htmlFor='email' className='form-label fg-color fw-bold'>
               Email :
             </label>
             <div className='input-group'>
@@ -99,51 +98,111 @@ export default function Register() {
             </div>
           </div>
 
-          <div className='mb-3'>
-            <label htmlFor='password' className='form-label'>
-              Mot de passe :
-            </label>
-            <div className='input-group'>
-              <input
-                className='form-control'
-                type='password'
-                id='password'
-                name='password'
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-              <span className='input-group-text'>********</span>
+          <div className='mb-3 row'>
+            <div className='col-12 col-xxl-6'>
+              <label
+                htmlFor='firstname'
+                className='form-label fg-color fw-bold'>
+                Prénom :
+              </label>
+              <div className='input-group'>
+                <input
+                  className='form-control'
+                  type='text'
+                  id='firstname'
+                  name='firstname'
+                  value={formData.firstname}
+                  onChange={handleChange}
+                  required
+                />
+                <span className='input-group-text'>Élisa</span>
+              </div>
+            </div>
+
+            <div className='col-12 col-xxl-6 mt-3 mt-xxl-0'>
+              <label htmlFor='lastname' className='form-label fg-color fw-bold'>
+                Nom de famille :
+              </label>
+              <div className='input-group'>
+                <input
+                  className='form-control'
+                  type='text'
+                  id='lastname'
+                  name='lastname'
+                  value={formData.lastname}
+                  onChange={handleChange}
+                  required
+                />
+                <span className='input-group-text'>Delajungle</span>
+              </div>
             </div>
           </div>
 
           <div className='mb-3'>
-            <label htmlFor='confirmPassword' className='form-label'>
-              Confirmer le mot de passe :
+            <label htmlFor='birthdate' className='form-label fg-color fw-bold'>
+              Date de naissance :
             </label>
             <div className='input-group'>
               <input
                 className='form-control'
-                type='password'
-                id='confirmPassword'
-                name='confirmPassword'
-                value={formData.confirmPassword}
+                type='date'
+                id='birthdate'
+                name='birthdate'
+                value={formData.birthdate}
                 onChange={handleChange}
                 required
               />
-              <span className='input-group-text'>********</span>
+              <span className='input-group-text'>05/11/1993</span>
             </div>
           </div>
 
-          <button type='submit' className='btn btn-success'>
+          <div className='mb-3 row'>
+            <div className='col-12 col-xxl-6'>
+              <label htmlFor='password' className='form-label fg-color fw-bold'>
+                Mot de passe :
+              </label>
+              <div className='input-group'>
+                <input
+                  className='form-control'
+                  type='password'
+                  id='password'
+                  name='password'
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+                <span className='input-group-text'>********</span>
+              </div>
+            </div>
+
+            <div className='col-12 col-xxl-6 mt-3 mt-xxl-0'>
+              <label
+                htmlFor='confirmPassword'
+                className='form-label fg-color fw-bold'>
+                Confirmer le mot de passe :
+              </label>
+              <div className='input-group'>
+                <input
+                  className='form-control'
+                  type='password'
+                  id='confirmPassword'
+                  name='confirmPassword'
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+                <span className='input-group-text'>********</span>
+              </div>
+            </div>
+          </div>
+
+          <button type='submit' className='btn btn-success mt-3 mx-auto'>
             Inscription
           </button>
         </form>
       </div>
 
-      <div
-        className='col-12 col-md-6 mx-auto p-5 rounded-start-2'
-        id='auth-right-side'>
+      <div className='col-12 col-md-6 mx-auto p-5 rounded-start-2 petscare-background'>
         <h2 className='petscare-brand'>Rejoignez-nous</h2>
         <p className='mt-4'>
           Intégrez une communauté bienveillante et aimante qui oeuvre pour le
