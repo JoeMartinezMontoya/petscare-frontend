@@ -1,7 +1,9 @@
+'use client';
 import { useAuth } from '../contexts/AuthContext';
 import Link from 'next/link';
 import React from 'react';
 import '../globals.css';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
@@ -46,22 +48,25 @@ export default function Navbar() {
               <>
                 <li>
                   <Link href='/register' className='btn btn-secondary mx-1'>
-                    Inscription
+                    <i className='bi bi-box-arrow-in-right'></i> Inscription
                   </Link>
                 </li>
                 <li>
                   <Link href='/login' className='btn btn-info mx-1'>
-                    Connexion
+                    <i className='bi bi-box-arrow-right'></i> Connexion
                   </Link>
                 </li>
               </>
             ) : (
               <li>
-                <button onClick={logout} className='btn btn-info'>
-                  Logout
-                </button>
+                <Link onClick={logout} href='/' className='btn btn-info mx-1'>
+                  <i className='bi bi-box-arrow-left'></i> Logout
+                </Link>
               </li>
             )}
+            <li>
+              <ThemeToggle />
+            </li>
           </ul>
         </div>
       </div>
