@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import dayjs from 'dayjs';
 import axios from 'axios';
+require('dayjs/locale/fr');
 
 export default function UserPage() {
   const { isAuthenticated } = useAuth();
@@ -10,7 +11,6 @@ export default function UserPage() {
   const [loading, setLoading] = useState(true);
   const [formattedCreatedAt, setFormattedCreatedAt] = useState(true);
   const [formattedBirthDate, setFormattedBirthDate] = useState(true);
-
   useEffect(() => {
     const fetchUserData = async () => {
       if (isAuthenticated) {
@@ -18,6 +18,7 @@ export default function UserPage() {
         if (storedData) {
           const parsedData = JSON.parse(storedData);
           setUserData(parsedData);
+          dayjs.locale('fr');
           setFormattedCreatedAt(
             dayjs(parsedData.createdAt).format('DD MMMM YYYY à HH:mm')
           );
@@ -39,10 +40,10 @@ export default function UserPage() {
               const data = response.data;
               setUserData(data);
               setFormattedCreatedAt(
-                dayjs(data.createdAt).format('DD MMMM YYYY à HH:mm')
+                dayjs(data.createdAt).format('dddd DD MMMM YYYY')
               );
               setFormattedBirthDate(
-                dayjs(data.birthDate).format('DD MMMM YYYY')
+                dayjs(data.birthDate).format('dddd DD MMMM YYYY')
               );
               localStorage.setItem('userData', JSON.stringify(data));
             })
@@ -113,8 +114,7 @@ export default function UserPage() {
                   <tbody>
                     <tr>
                       <th scope='row'>
-                        <i className='bi bi-card-checklist'></i> Nom
-                        d'utilisateur
+                        <i className='bi bi-card-checklist'></i> Pseudonyme
                       </th>
                       <td colSpan='2'>{userData.userName}</td>
                     </tr>
