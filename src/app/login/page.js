@@ -30,7 +30,7 @@ export default function Login() {
         password: formData.password,
       })
       .then((json) => {
-        login(json.data);
+        login(json.data.token);
         addFlashMessage(json.message || 'Message test', 'success');
         router.push('/');
       })
