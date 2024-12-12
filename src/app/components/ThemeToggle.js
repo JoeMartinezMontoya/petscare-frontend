@@ -1,25 +1,35 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState('light');
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
+  // Utiliser useEffect pour ne rendre le thème qu'après le montage sur le client
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
-    document.body.setAttribute('data-theme', savedTheme);
+    setMounted(true); // Le composant est monté sur le client
   }, []);
 
+  if (!mounted) {
+    return null; // Ne pas afficher le bouton avant que le client soit prêt
+  }
+
+  // Toggle du thème entre 'light' et 'dark'
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
-    document.body.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
   };
 
   return (
-    <button onClick={toggleTheme} className='btn btn-sm theme-toggle-btn'>
-      {theme === 'light' ? '🌙 Mode sombre' : '☀️ Mode clair'}
+    <button
+      onClick={toggleTheme}
+      className='btn btn-outline-info theme-toggle-btn mx-2'>
+      {theme === 'light' ? (
+        <i className='bi bi-moon-stars'></i> // Icône pour le thème clair
+      ) : (
+        <i className='bi bi-sun'></i> // Icône pour le thème sombre
+      )}
     </button>
   );
 }
