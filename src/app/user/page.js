@@ -1,4 +1,6 @@
+// src/app/pages/UserPage.js
 'use client';
+import { getCachedData, setCachedData, clearCachedData } from '../utils/cache';
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import dayjs from 'dayjs';
@@ -9,50 +11,60 @@ export default function UserPage() {
   const { isAuthenticated } = useAuth();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [formattedCreatedAt, setFormattedCreatedAt] = useState(true);
-  const [formattedBirthDate, setFormattedBirthDate] = useState(true);
+  const [formattedCreatedAt, setFormattedCreatedAt] = useState(null);
+  const [formattedBirthDate, setFormattedBirthDate] = useState(null);
+
   useEffect(() => {
     const fetchUserData = async () => {
-      if (isAuthenticated) {
-        const storedData = localStorage.getItem('userData');
-        if (storedData) {
-          const parsedData = JSON.parse(storedData);
-          setUserData(parsedData);
-          dayjs.locale('fr');
-          setFormattedCreatedAt(
-            dayjs(parsedData.createdAt).format('DD MMMM YYYY à HH:mm')
-          );
-          setFormattedBirthDate(
-            dayjs(parsedData.birthDate).format('DD MMMM YYYY')
-          );
-          setLoading(false);
-        } else {
-          const token = localStorage.getItem('authToken');
-          await axios
-            .get(
-              `${process.env.NEXT_PUBLIC_USERS_API_URL}/api/users/show-user`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              }
-            )
-            .then((response) => {
-              dayjs.locale('fr');
-              const data = response.data;
-              setUserData(data);
-              setFormattedCreatedAt(
-                dayjs(data.createdAt).format('dddd DD MMMM YYYY')
-              );
-              setFormattedBirthDate(
-                dayjs(data.birthDate).format('dddd DD MMMM YYYY')
-              );
-              localStorage.setItem('userData', JSON.stringify(data));
-            })
-            .catch((error) => console.error(error))
-            .finally(() => setLoading(false));
-        }
-      } else {
+      /**======================
+       *?   Not Authenticated
+       *========================**/
+
+      if (!isAuthenticated) {
+        setUserData(null);
+        clearCachedData('userData');
         setLoading(false);
+        return;
       }
+
+      /**======================
+       *?   Getting User Data
+       *========================**/
+
+      const storedData = getCachedData('userData');
+      if (storedData) {
+        const parsedData = JSON.parse(storedData);
+        setUserData(parsedData);
+        formatDates(parsedData);
+        setLoading(false);
+      } else {
+        const token = localStorage.getItem('authToken');
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_USERS_API_URL}/api/users/show-user`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          const data = response.data;
+          setUserData(data);
+          formatDates(data);
+          setCachedData('userData', data);
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    const formatDates = (data) => {
+      dayjs.locale('fr');
+      setFormattedCreatedAt(
+        dayjs(data.createdAt).format('DD MMMM YYYY à HH:mm')
+      );
+      setFormattedBirthDate(dayjs(data.birthDate).format('DD MMMM YYYY'));
     };
 
     fetchUserData();
@@ -103,7 +115,11 @@ export default function UserPage() {
             {userData ? (
               <>
                 <div className='row my-4 align-items-center'>
-                  <img src='https://placehold.co/200x200' className='col-2' />
+                  <img
+                    src='https://placehold.co/200x200'
+                    className='col-2'
+                    alt='profile picture'
+                  />
 
                   <h1 className='petscare-brand col-10'>
                     Bonjour {userData.userName}
