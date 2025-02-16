@@ -1,7 +1,8 @@
 import React from 'react';
 import UserCarousel from './UserCarousel';
+import UserAddPetModal from './UserAddPetModal';
 
-export default function UserInfo({
+export default function UserData({
   userData,
   formattedCreatedAt,
   formattedBirthDate,
@@ -57,7 +58,9 @@ export default function UserInfo({
             </tbody>
           </table>
 
-          <button>Hello</button>
+          <div className='row mt-4'>
+            <UserAddPetModal userId={userData.id} />
+          </div>
         </div>
       </div>
       <UserCarousel />
