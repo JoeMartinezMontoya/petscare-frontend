@@ -6,6 +6,8 @@ export default function UserAddPetModal({ userId }) {
   const [formData, setFormData] = useState({
     name: '',
     race: '',
+    species: '',
+    birthDate: '',
   });
   const { addFlashMessage } = useFlashMessage();
 
@@ -30,7 +32,9 @@ export default function UserAddPetModal({ userId }) {
         `${apiUrl}/api/pets/create-pet`,
         {
           name: formData.name,
+          species: formData.species,
           race: formData.race,
+          birthDate: formData.birthDate,
           user_id: userId,
         },
         {
@@ -40,9 +44,7 @@ export default function UserAddPetModal({ userId }) {
         }
       )
       .then((json) => {
-        console.log(json);
-
-        // addFlashMessage(json.data.detail || 'Message test', 'success');
+        addFlashMessage(json.data.detail || 'Message test', 'success');
       })
       .catch((err) => {
         addFlashMessage(err.response.data.detail || 'Message test', 'danger');
@@ -61,16 +63,22 @@ export default function UserAddPetModal({ userId }) {
         data-bs-target='#addPetModal'>
         Ajouter un animal
       </button>
-      {/* Layered background */}
+      {/**================================================================================================
+       *                                         LAYERED BACKGROUND
+       *================================================================================================**/}
       <div
         className='modal fade'
         id='addPetModal'
         tabIndex='-1'
         aria-hidden='true'>
         <div className='modal-dialog'>
-          {/* Modal */}
+          {/**================================================================================================
+           *                                         MODAL
+           *================================================================================================**/}
           <div className='modal-content petscare-background'>
-            {/* Header */}
+            {/**================================================================================================
+             *                                         HEADER
+             *================================================================================================**/}
             <div className='modal-header'>
               <h5 className='modal-title petscare-brand'>Ajouter un animal</h5>
               <button
@@ -78,35 +86,73 @@ export default function UserAddPetModal({ userId }) {
                 className='btn-close'
                 data-bs-dismiss='modal'></button>
             </div>
-            {/* Form */}
-            <div className='modal-body'>
+            {/**================================================================================================
+             *                                         FORM
+             *================================================================================================**/}
+            <div className='modal-body flex'>
               <form onSubmit={handleSubmit}>
-                <div className='mb-3'>
-                  <label className='form-label petscare-brand'>
-                    Nom de l&apos;animal
-                  </label>
-                  <input
-                    type='text'
-                    className='form-control'
-                    name='name'
-                    value={formData.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    required
-                  />
+                <div className='row mb-3'>
+                  <div className='col-12'>
+                    <label className='form-label petscare-brand'>
+                      Nom de l&apos;animal
+                    </label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      name='name'
+                      value={formData.name}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      required
+                    />
+                  </div>
                 </div>
-                <div className='mb-3'>
-                  <label className='form-label petscare-brand'>Race</label>
-                  <input
-                    type='text'
-                    className='form-control'
-                    name='race'
-                    value={formData.race}
-                    onChange={handleChange}
-                    required
-                  />
+
+                <div className='row mb-3'>
+                  <div className='col-6'>
+                    <label className='form-label petscare-brand'>Espèces</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      name='species'
+                      value={formData.species}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className='col-6'>
+                    <label className='form-label petscare-brand'>Race</label>
+                    <input
+                      type='text'
+                      className='form-control'
+                      name='race'
+                      value={formData.race}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
                 </div>
-                {/* Button & Messages */}
+
+                <div className='row mb-3'>
+                  <div className='col-12'>
+                    <label className='form-label petscare-brand'>
+                      Date de naissance
+                    </label>
+                    <input
+                      type='date'
+                      className='form-control'
+                      name='birthDate'
+                      value={formData.birthDate}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/**================================================================================================
+                 *                                         FOOTER
+                 *================================================================================================**/}
                 {error && <p className='text-danger'>{error}</p>}
                 {success && <p className='text-success'>{success}</p>}
                 <button type='submit' className='btn btn-primary'>
