@@ -51,9 +51,11 @@ export default function UserPage() {
           );
 
           const data = response.data;
-          setUserData(data);
-          formatDates(data);
-          setCachedData('userData', data);
+          console.log(data);
+
+          setUserData(data.user);
+          formatDates(data.user);
+          setCachedData('userData', data.user);
         } catch (error) {
           console.error(error);
         } finally {
