@@ -91,10 +91,19 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      Object.values(formData).every((value) => value.length === 0) ||
-      Object.keys(errors).length > 0
-    ) {
+    setErrors({});
+    setSuccess({});
+
+    let newErrors = {};
+    Object.keys(formData).forEach((field) => {
+      validateField(field, formData[field]);
+      if (errors[field]) {
+        newErrors[field] = errors[field];
+      }
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -102,9 +111,8 @@ export default function Register() {
     await axios
       .post(`${apiUrl}/api/auth/register-user`, formData)
       .then((json) => {
-        console.log(json);
         addFlashMessage(json.data.message, 'success');
-        // router.push('/login');
+        router.push('/login');
       })
       .catch((err) => {
         addFlashMessage(err.response.data.detail || 'Message test', 'danger');
