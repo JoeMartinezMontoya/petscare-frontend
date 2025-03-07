@@ -19,20 +19,12 @@ export default function UserPage() {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      /**======================
-       *?   Not Authenticated
-       *========================**/
-
       if (!isAuthenticated) {
         setUserData(null);
         clearCachedData('userData');
         setLoading(false);
         return;
       }
-
-      /**======================
-       *?   Getting User Data
-       *========================**/
 
       const storedData = getCachedData('userData');
       if (storedData) {
@@ -51,8 +43,6 @@ export default function UserPage() {
           );
 
           const data = response.data;
-          console.log(data);
-
           setUserData(data.user);
           formatDates(data.user);
           setCachedData('userData', data.user);
