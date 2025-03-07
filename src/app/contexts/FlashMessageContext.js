@@ -7,7 +7,7 @@ export const FlashMessageProvider = ({ children }) => {
 
   const addFlashMessage = (message, type = 'success') => {
     setFlashMessage({ message, type });
-    setTimeout(() => setFlashMessage(null), 5000);
+    setTimeout(() => setFlashMessage(null), 5000000);
   };
 
   return (

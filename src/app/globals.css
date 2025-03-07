@@ -1,10 +1,8 @@
-/* Importation de la police */
 @font-face {
   font-family: 'PCMontserrat';
   src: url('fonts/MontserratAlternates-ExtraBold.ttf') format('woff');
 }
 
-/* Définition des variables CSS pour les thèmes */
 :root {
   --background-color: #f5f6fa;
   --foreground-color: #192a56;
@@ -19,7 +17,6 @@ html[data-theme='dark'] {
   --color: #ecf0f1;
 }
 
-/* Styles globaux */
 * {
   box-sizing: border-box;
   padding: 0;
@@ -67,6 +64,14 @@ a {
   font-weight: bold;
 }
 
+.petscare-flash-message{
+  right: 0;
+}
+
+.petscare-small {
+  font-size: .8rem;
+}
+
 .fg-color {
   color: var(--foreground-color);
 }
@@ -75,4 +80,8 @@ table tr td,
 table tr th {
   background-color: rgba(0, 0, 0, 0) !important;
   color: var(--foreground-color) !important;
+}
+
+.invalid-feedback {
+  display: block !important; /* Forcer l'affichage */
 }
