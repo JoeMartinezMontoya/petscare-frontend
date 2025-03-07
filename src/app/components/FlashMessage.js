@@ -7,7 +7,8 @@ export default function FlashMessage() {
   if (!flashMessage) return null;
 
   return (
-    <div className={`alert alert-${flashMessage.type} float-end`}>
+    <div
+      className={`alert alert-${flashMessage.type} petscare-flash-message position-absolute`}>
       {flashMessage.message}
     </div>
   );
