@@ -8,6 +8,7 @@ import UserData from './components/UserData';
 import UserLoading from './components/UserLoading';
 import UserNotAuthenticated from './components/UserNotAuthenticated';
 import UserPlaceholder from './components/UserPlaceholder';
+import UserPets from './components/UserPets';
 require('dayjs/locale/fr');
 
 export default function UserPage() {
@@ -42,10 +43,10 @@ export default function UserPage() {
             }
           );
 
-          const data = response.data;
-          setUserData(data.user);
-          formatDates(data.user);
-          setCachedData('userData', data.user);
+          const data = JSON.parse(response.data.user);
+          setUserData(data);
+          formatDates(data);
+          setCachedData('userData', data);
         } catch (error) {
           console.error(error);
         } finally {
@@ -70,16 +71,23 @@ export default function UserPage() {
   if (loading) return <UserLoading />;
 
   return (
-    <div className='row mt-5 petscare-background'>
+    <>
       {userData ? (
-        <UserData
-          userData={userData}
-          formattedCreatedAt={formattedCreatedAt}
-          formattedBirthDate={formattedBirthDate}
-        />
+        <>
+          <div className='row mt-5 petscare-background'>
+            <UserData
+              userData={userData}
+              formattedCreatedAt={formattedCreatedAt}
+              formattedBirthDate={formattedBirthDate}
+            />
+          </div>
+          <UserPets />
+        </>
       ) : (
-        <UserPlaceholder />
+        <div className='row mt-5 petscare-background'>
+          <UserPlaceholder />
+        </div>
       )}
-    </div>
+    </>
   );
 }
