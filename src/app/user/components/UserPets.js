@@ -1,9 +1,5 @@
 'use client';
-import {
-  getCachedData,
-  setCachedData,
-  clearCachedData,
-} from '../../utils/cache';
+import { getCachedData, setCachedData } from '../../utils/cache';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import UserPetData from './UserPetData';
@@ -38,12 +34,16 @@ export default function UserPets() {
   }, [apiUrl]);
 
   return (
-    <div className='row mt-5'>
-      <h1 className='petscare-brand'>Vos animaux</h1>
-      {userPets &&
-        userPets.map((pet) => {
-          return <UserPetData key={pet.id} userPet={pet} />;
-        })}
+    <div className='mt-5'>
+      <div className='container'>
+        <h1 className='petscare-brand'>Vos animaux</h1>
+        <div className='row g-3'>
+          {userPets &&
+            userPets.map((pet) => {
+              return <UserPetData key={pet.id} userPet={pet} />;
+            })}
+        </div>
+      </div>
     </div>
   );
 }

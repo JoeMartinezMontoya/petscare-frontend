@@ -1,8 +1,9 @@
 'use client';
-import { getCachedData, setCachedData, clearCachedData } from './utils/cache';
+import { getCachedData, setCachedData } from './utils/cache';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import LastPets from './components/lastPets';
+import Stats from './components/Stats';
 
 export default function Home() {
   const [pets, setPets] = useState([]);
@@ -45,8 +46,8 @@ export default function Home() {
           </p>
         </div>
       </div>
-
       <LastPets pets={pets} />
+      <Stats />
     </>
   );
 }
