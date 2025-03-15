@@ -4,10 +4,9 @@ const FlashMessageContext = createContext();
 
 export const FlashMessageProvider = ({ children }) => {
   const [flashMessage, setFlashMessage] = useState(null);
-
   const addFlashMessage = (message, type = 'success') => {
     setFlashMessage({ message, type });
-    setTimeout(() => setFlashMessage(null), 5000000);
+    setTimeout(() => setFlashMessage(null), 5000);
   };
 
   return (

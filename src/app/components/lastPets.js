@@ -1,10 +1,32 @@
-import Image from 'next/image';
-import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import LastPetsLoading from './LastPetsLoading';
 
-export default function LastPets({ pets }) {
-  const randomInt = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
+const randomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+async function fetchLastPets() {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_PETS_API_URL}/api/pets/last-pets`
+  );
+  return JSON.parse(response.data['last-pets']);
+}
+
+export default function LastPets() {
+  const {
+    data: pets,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['lastPets'],
+    queryFn: fetchLastPets,
+    staleTime: 600000,
+    gcTime: 600000,
+  });
+
+  if (isLoading) return <LastPetsLoading />;
+  if (error) return <p className='text-danger'>Une erreur est survenue</p>;
 
   return (
     <div className='row'>
