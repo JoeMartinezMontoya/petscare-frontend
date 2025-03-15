@@ -1,6 +1,6 @@
 'use client';
-import { getCachedData, setCachedData, clearCachedData } from '../utils/cache';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 import dayjs from 'dayjs';
 import axios from 'axios';
@@ -11,64 +11,39 @@ import UserPlaceholder from './components/UserPlaceholder';
 import UserPets from './components/UserPets';
 require('dayjs/locale/fr');
 
+async function fetchUserData() {
+  const token = sessionStorage.getItem('authToken');
+  if (!token) throw new Error('No token available');
+
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_USERS_API_URL}/api/users/show-user`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return JSON.parse(response.data.user);
+}
+
 export default function UserPage() {
   const { isAuthenticated } = useAuth();
-  const [userData, setUserData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [formattedCreatedAt, setFormattedCreatedAt] = useState(null);
-  const [formattedBirthDate, setFormattedBirthDate] = useState(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (!isAuthenticated) {
-        setUserData(null);
-        clearCachedData('userData');
-        setLoading(false);
-        return;
-      }
-
-      const storedData = getCachedData('userData');
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setUserData(parsedData);
-        formatDates(parsedData);
-        setLoading(false);
-      } else {
-        const token = localStorage.getItem('authToken');
-        try {
-          const response = await axios.get(
-            `${process.env.NEXT_PUBLIC_USERS_API_URL}/api/users/show-user`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-
-          const data = JSON.parse(response.data.user);
-          setUserData(data);
-          formatDates(data);
-          setCachedData('userData', data);
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    const formatDates = (data) => {
-      dayjs.locale('fr');
-      setFormattedCreatedAt(
-        dayjs(data.createdAt).format('DD MMMM YYYY à HH:mm')
-      );
-      setFormattedBirthDate(dayjs(data.birthDate).format('DD MMMM YYYY'));
-    };
-
-    fetchUserData();
-  }, [isAuthenticated]);
+  const {
+    data: userData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['userData'],
+    queryFn: fetchUserData,
+    enabled: !!isAuthenticated,
+    staleTime: 1000 * 60 * 5,
+  });
 
   if (isAuthenticated === undefined) return <UserLoading />;
   if (!isAuthenticated) return <UserNotAuthenticated />;
-  if (loading) return <UserLoading />;
+  if (isLoading)
+    return (
+      <div className='row mt-5 petscare-background'>
+        <UserPlaceholder />
+      </div>
+    );
+  if (error) return <p className='text-danger'>Une erreur est survenue</p>;
 
   return (
     <>
@@ -77,8 +52,12 @@ export default function UserPage() {
           <div className='row mt-5 petscare-background'>
             <UserData
               userData={userData}
-              formattedCreatedAt={formattedCreatedAt}
-              formattedBirthDate={formattedBirthDate}
+              formattedCreatedAt={dayjs(userData.createdAt).format(
+                'DD MMMM YYYY à HH:mm'
+              )}
+              formattedBirthDate={dayjs(userData.birthDate).format(
+                'DD MMMM YYYY'
+              )}
             />
           </div>
           <UserPets />

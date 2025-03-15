@@ -1,37 +1,34 @@
 'use client';
-import { getCachedData, setCachedData } from '../../utils/cache';
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
 import UserPetData from './UserPetData';
+import LastPetsLoading from '@/app/components/LastPetsLoading';
+import { useQuery } from '@tanstack/react-query';
+
+async function fetchUserPets() {
+  const response = await axios.get(
+    `${process.env.NEXT_PUBLIC_PETS_API_URL}/api/pets/user/1`,
+    {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+      },
+    }
+  );
+  return JSON.parse(response.data['user-pets']);
+}
 
 export default function UserPets() {
-  const [userPets, setUserPets] = useState([]);
-  const apiUrl = process.env.NEXT_PUBLIC_PETS_API_URL;
-  useEffect(() => {
-    const fetchUserPets = async () => {
-      const storedData = getCachedData('userPets');
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setUserPets(parsedData);
-      } else {
-        const response = await axios
-          .get(`${apiUrl}/api/pets/user/1`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-            },
-          })
-          .then((response) => {
-            setUserPets(JSON.parse(response.data['user-pets']));
-            setCachedData('userPets', JSON.parse(response.data['user-pets']));
-          })
-          .catch((error) => {
-            console.error('Error fetching user pets:', error);
-          });
-      }
-    };
+  const {
+    data: userPets,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['userPets'],
+    queryFn: fetchUserPets,
+    staleTime: 1000 * 60 * 5,
+  });
 
-    fetchUserPets();
-  }, [apiUrl]);
+  if (isLoading) return <LastPetsLoading />;
+  if (error) return <p className='text-danger'>Une erreur est survenue</p>;
 
   return (
     <div className='mt-5'>
