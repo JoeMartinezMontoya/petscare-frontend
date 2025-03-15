@@ -26,7 +26,7 @@ export default function UserAddPetModal({ userId }) {
     setSuccess(null);
 
     const apiUrl = process.env.NEXT_PUBLIC_PETS_API_URL;
-    const token = localStorage.getItem('authToken');
+    const token = sessionStorage.getItem('authToken');
     const response = await axios
       .post(
         `${apiUrl}/api/pets/create-pet`,

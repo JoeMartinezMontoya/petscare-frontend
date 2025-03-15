@@ -6,19 +6,17 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Vérifie si un token existe dans le localStorage
-    const token = localStorage.getItem('authToken');
-    setIsAuthenticated(!!token); // Si un token est présent, on considère l'utilisateur connecté
+    const token = sessionStorage.getItem('authToken');
+    setIsAuthenticated(!!token);
   }, []);
 
   const login = (token) => {
-    localStorage.setItem('authToken', token);
-    setIsAuthenticated(true); // Met à jour l'état
+    sessionStorage.setItem('authToken', token);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
-    sessionStorage.removeItem('userData');
+    sessionStorage.removeItem('authToken');
     setIsAuthenticated(false);
   };
 
