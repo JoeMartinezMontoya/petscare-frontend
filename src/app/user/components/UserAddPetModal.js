@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useFlashMessage } from '@/app/contexts/FlashMessageContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function UserAddPetModal({ userId }) {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ export default function UserAddPetModal({ userId }) {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [displayName, setDisplayName] = useState('');
+
+  const queryClient = useQueryClient();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,10 +48,15 @@ export default function UserAddPetModal({ userId }) {
       )
       .then((json) => {
         addFlashMessage(json.data.detail || 'Message test', 'success');
+        handlePetAdded();
       })
       .catch((err) => {
         addFlashMessage(err.response.data.detail || 'Message test', 'danger');
       });
+  };
+
+  const handlePetAdded = () => {
+    queryClient.invalidateQueries({ queryKey: ['userPets'] });
   };
 
   const handleBlur = () => {
