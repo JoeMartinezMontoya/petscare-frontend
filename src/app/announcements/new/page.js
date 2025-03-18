@@ -1,12 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import AnnouncementForm from './components/AnnouncementForm';
+import AnnouncementForm from './components/PetLostAnnouncementForm';
 
 export default function NewAnnounce() {
   const [selectedForm, setSelectedForm] = useState(null);
+  const [isFormSelected, setIsFormSelected] = useState(false);
+
   const handleClick = (e) => {
     e.preventDefault();
     setSelectedForm(e.target.dataset.announcementType);
+    setIsFormSelected(true);
   };
 
   const formDisplay = (type) => {
@@ -20,7 +23,7 @@ export default function NewAnnounce() {
         <div className='row mt-5 justify-content-around'>
           <button
             className='btn btn-primary col-2'
-            data-announcement-type='lost'
+            data-announcement-type='disparition'
             onClick={handleClick}>
             Avis de recherche
           </button>
@@ -45,7 +48,9 @@ export default function NewAnnounce() {
         </div>
       </div>
 
-      <div className='container mt-5'>{formDisplay(selectedForm)}</div>
+      <div className='container mt-5'>
+        {isFormSelected === true && formDisplay(selectedForm)}
+      </div>
     </>
   );
 }
