@@ -3,10 +3,13 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
 import Select from 'react-select';
+import LocationAutocomplete from './LocationAutocomplete';
 
 async function fetchUserPets() {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_PETS_API_URL}/api/pets/user/1`,
+    `${
+      process.env.NEXT_PUBLIC_PETS_API_URL
+    }/api/pets/user/${sessionStorage.getItem('userId')}`,
     {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
@@ -16,9 +19,10 @@ async function fetchUserPets() {
   return JSON.parse(response.data['user-pets']);
 }
 
-async function sendAnnouncementForm() {
-  const response = await axios.get(
+async function sendAnnouncementForm(formData) {
+  const response = await axios.post(
     `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/api/announcements/create-announcement`,
+    formData,
     {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
@@ -39,6 +43,10 @@ export default function PetLostAnnouncementForm({ type }) {
     starting_date: '',
     contact_info: '',
     pet_ids: [],
+    location: '',
+    latitude: null,
+    longitude: null,
+    user_id: sessionStorage.getItem('userId'),
   });
 
   const {
@@ -63,6 +71,16 @@ export default function PetLostAnnouncementForm({ type }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleLocationSelect = (place) => {
+    console.log('Données de localisation reçues:', place);
+
+    setFormData((prev) => ({
+      ...prev,
+      location: place.formatted,
+      latitude: place.geometry.lat,
+      longitude: place.geometry.lng,
+    }));
+  };
   const handleChangeDate = (e) => {
     const newDate = new Date(e.target.value).toISOString().split('T')[0];
     setFormData((prev) => ({ ...prev, starting_date: newDate }));
@@ -78,7 +96,7 @@ export default function PetLostAnnouncementForm({ type }) {
     e.preventDefault();
     console.log(formData);
 
-    sendAnnouncementForm();
+    sendAnnouncementForm(formData);
   };
 
   return (
@@ -87,13 +105,15 @@ export default function PetLostAnnouncementForm({ type }) {
 
       <form onSubmit={handleSubmit} className='d-flex flex-column'>
         <div className='row'>
-          <div className='alert alert-danger'>
-            <strong>Chaque seconde compte !</strong>
-            <br /> Nous allons fournir toutes les informations supplémentaires
-            concernant les caractéristiques physique sur l&apos;annonce qui sera
-            générée, un bouton de partage sur les réseaux sociaux sera présent
-            dans celle-ci, ainsi qu&apos;une affiche à imprimer et poster dans
-            votre voisinnage
+          <div className='form-group'>
+            <div className='alert alert-danger'>
+              <strong>Chaque seconde compte !</strong>
+              <br /> Nous allons fournir toutes les informations supplémentaires
+              concernant les caractéristiques physique sur l&apos;annonce qui
+              sera générée, un bouton de partage sur les réseaux sociaux sera
+              présent dans celle-ci, ainsi qu&apos;une affiche à imprimer et
+              poster dans votre voisinnage
+            </div>
           </div>
           <div className='form-group col'>
             <label className='form-label petscare-brand'>Qui a disparu ?</label>
@@ -124,8 +144,8 @@ export default function PetLostAnnouncementForm({ type }) {
           </div>
         </div>
 
-        <div className='row'>
-          <div className='form-group my-3 col'>
+        <div className='row mt-3'>
+          <div className='form-group col'>
             <label className=' form-label petscare-brand'>
               Des informations concernant le moyen de contact ?
             </label>
@@ -138,11 +158,31 @@ export default function PetLostAnnouncementForm({ type }) {
           </div>
         </div>
 
-        {/* TODO: rajouter localisation */}
+        <div className='row mt-3'>
+          <div className='form-group col'>
+            <label className='form-label petscare-brand'>Localisation</label>
+            <LocationAutocomplete onSelect={handleLocationSelect} />
+          </div>
 
-        <button type='submit' className='btn btn-primary col-3'>
-          Publier l&apos;annonce
-        </button>
+          <input
+            type='hidden'
+            name='latitude'
+            value={formData.latitude || ''}
+          />
+          <input
+            type='hidden'
+            name='longitude'
+            value={formData.longitude || ''}
+          />
+        </div>
+
+        <div className='row mt-5'>
+          <div className='form-group col'>
+            <button type='submit' className='btn btn-primary col-3'>
+              Publier l&apos;annonce
+            </button>
+          </div>
+        </div>
       </form>
     </>
   );

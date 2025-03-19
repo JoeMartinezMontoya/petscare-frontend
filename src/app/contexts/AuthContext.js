@@ -10,8 +10,9 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(!!token);
   }, []);
 
-  const login = (token) => {
+  const login = (id, token) => {
     sessionStorage.setItem('authToken', token);
+    sessionStorage.setItem('userId', id);
     setIsAuthenticated(true);
   };
 
