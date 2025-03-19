@@ -37,11 +37,26 @@ export default function AnnouncementsPage() {
         {announcements?.map((announcement) => (
           <div key={announcement.id} className='col-4 my-3'>
             <div className='card h-100 petscare-background'>
+              <div className='card-header'>{announcement.type} </div>
               <div className='card-body'>
                 <h5 className='card-title petscare-brand'>
-                  {announcement.title} - {announcement.type}
+                  {announcement.title}
                 </h5>
                 <p className='card-text'>{announcement.content}</p>
+              </div>
+              <div className='card-footer'>
+                <div className='row justify-content-between align-items-center'>
+                  <div className='col-4'>
+                    {new Date(announcement.createdAt).toLocaleDateString()}
+                  </div>
+                  <div className='col-2'>
+                    <Link
+                      href={`/announcements/${announcement.id}`}
+                      className='btn btn-info'>
+                      Voir
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
