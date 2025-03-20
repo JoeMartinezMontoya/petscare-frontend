@@ -24,10 +24,13 @@ export default function Login() {
     e.preventDefault();
 
     const response = await axios
-      .post(`${process.env.NEXT_PUBLIC_AUTH_API_URL}/api/auth/login-user`, {
-        email: formData.email,
-        password: formData.password,
-      })
+      .post(
+        `${process.env.NEXT_PUBLIC_AUTH_API_URL}/public/api/auth/login-user`,
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      )
       .then((json) => {
         login(json.data.userData.id, json.data.token);
         addFlashMessage(json.message || 'Bonjour !', 'success');

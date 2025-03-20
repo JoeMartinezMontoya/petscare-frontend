@@ -16,7 +16,7 @@ async function fetchUserData() {
   if (!token) throw new Error('No token available');
 
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_USERS_API_URL}/api/users/show-user`,
+    `${process.env.NEXT_PUBLIC_USERS_API_URL}/private/api/users/show-user`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return JSON.parse(response.data.user);

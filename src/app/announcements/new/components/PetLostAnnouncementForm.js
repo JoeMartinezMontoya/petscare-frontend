@@ -1,38 +1,15 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
 import Select from 'react-select';
 import LocationAutocomplete from './LocationAutocomplete';
-
-async function fetchUserPets() {
-  const response = await axios.get(
-    `${
-      process.env.NEXT_PUBLIC_PETS_API_URL
-    }/private/api/pets/user/${sessionStorage.getItem('userId')}`,
-    {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
-      },
-    }
-  );
-  return JSON.parse(response.data['user-pets']);
-}
-
-async function sendAnnouncementForm(formData) {
-  const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/private/api/announcements/create-announcement`,
-    formData,
-    {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
-      },
-    }
-  );
-  return response.data.announcementCreated[0]; // Retourne l'ID de l'annonce créée
-}
+import { useUser } from '@/app/contexts/UserContext';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function PetLostAnnouncementForm({ type }) {
+  const { user, pets, loading } = useUser();
+  const queryClient = useQueryClient(); // 🔥 React Query pour gérer le cache
+
   const [formData, setFormData] = useState({
     title: 'Avis de disparition',
     type: type,
@@ -42,28 +19,41 @@ export default function PetLostAnnouncementForm({ type }) {
     location: '',
     latitude: null,
     longitude: null,
-    user_id: sessionStorage.getItem('userId'),
   });
 
-  const [loading, setLoading] = useState(false);
-  const [announcementId, setAnnouncementId] = useState(null);
+  const [announcementIds, setAnnouncementIds] = useState(null);
 
-  const {
-    data: userPets,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['userPets'],
-    queryFn: fetchUserPets,
-    staleTime: 1000 * 60 * 20,
+  const petOptions = pets.map((pet) => ({
+    value: pet.id,
+    label: pet.name,
+  }));
+
+  const createAnnouncement = async (data) => {
+    console.log(user);
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/private/api/announcements/create-announcement`,
+      { ...data, user_id: user.id },
+      {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+        },
+      }
+    );
+    return response.data.announcementCreated;
+  };
+
+  const { mutate, isLoading: submitting } = useMutation({
+    mutationFn: createAnnouncement,
+    onSuccess: (announcementCreated) => {
+      console.log('Annonces créées avec les IDs:', announcementCreated);
+      setAnnouncementIds(announcementCreated);
+      queryClient.invalidateQueries(['user-announcements']);
+    },
+    onError: (error) => {
+      console.error("Erreur lors de la création de l'annonce:", error);
+    },
   });
-
-  const petOptions = userPets
-    ? userPets.map((pet) => ({
-        value: pet.id,
-        label: pet.name,
-      }))
-    : [];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,19 +79,18 @@ export default function PetLostAnnouncementForm({ type }) {
     setFormData((prev) => ({ ...prev, pet_ids: selectedPetIds }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true); // Active l'état de chargement
-    setAnnouncementId(null); // Reset si une nouvelle soumission
+    setAnnouncementIds(null);
+    mutate(formData);
+  };
 
-    try {
-      const newId = await sendAnnouncementForm(formData);
-      setAnnouncementId(newId); // Stocke l'ID de l'annonce
-    } catch (error) {
-      console.error('Erreur lors de la création de l’annonce:', error);
-    } finally {
-      setLoading(false); // Désactive l'état de chargement
-    }
+  const handleOpenAnnouncements = () => {
+    sessionStorage.setItem(
+      'lastAnnouncementIds',
+      JSON.stringify(announcementIds)
+    );
+    window.location.href = '/redirect-announcements';
   };
 
   return (
@@ -119,21 +108,22 @@ export default function PetLostAnnouncementForm({ type }) {
               présent ainsi qu&apos;une affiche à imprimer.
             </div>
           </div>
+
           <div className='form-group col'>
             <label className='form-label petscare-brand'>Qui a disparu ?</label>
             <Select
               options={petOptions}
               isMulti
-              placeholder={
-                isLoading ? 'Chargement...' : 'Choisissez vos animaux'
-              }
+              placeholder={loading ? 'Chargement...' : 'Choisissez vos animaux'}
               onChange={handlePetSelectChange}
               closeMenuOnSelect={false}
               closeMenuOnScroll
               isClearable
               required
             />
-            {error && <p className='text-danger'>Erreur de chargement</p>}
+            {pets.length === 0 && (
+              <p className='text-danger'>Aucun animal enregistré.</p>
+            )}
           </div>
 
           <div className='form-group col'>
@@ -167,39 +157,32 @@ export default function PetLostAnnouncementForm({ type }) {
             <label className='form-label petscare-brand'>Localisation</label>
             <LocationAutocomplete onSelect={handleLocationSelect} />
           </div>
-
-          <input
-            type='hidden'
-            name='latitude'
-            value={formData.latitude || ''}
-          />
-          <input
-            type='hidden'
-            name='longitude'
-            value={formData.longitude || ''}
-          />
         </div>
 
         <div className='row mt-5'>
           <div className='form-group col'>
-            {announcementId ? (
-              <a
-                href={`/announcements/${announcementId}`}
-                className='btn btn-success col-3'>
-                Voir votre annonce
-              </a>
+            {announcementIds ? (
+              <button
+                type='button'
+                className='btn btn-success col-3'
+                onClick={handleOpenAnnouncements}>
+                Voir{' '}
+                {announcementIds.length > 1
+                  ? `vos annonces (${announcementIds.length})`
+                  : 'votre annonce'}
+              </button>
             ) : (
               <button
                 type='submit'
                 className='btn btn-primary col-3'
-                disabled={loading}>
-                {loading ? (
+                disabled={submitting}>
+                {submitting ? (
                   <>
                     <span className='spinner-border spinner-border-sm me-2'></span>
                     Envoi en cours...
                   </>
                 ) : (
-                  'Publier l’annonce'
+                  "Publier l'annonce"
                 )}
               </button>
             )}
