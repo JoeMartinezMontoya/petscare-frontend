@@ -8,7 +8,7 @@ const randomInt = (min, max) => {
 
 async function fetchLastPets() {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_PETS_API_URL}/api/pets/last-pets`
+    `${process.env.NEXT_PUBLIC_PETS_API_URL}/public/api/pets/last-pets`
   );
   return JSON.parse(response.data['last-pets']);
 }
@@ -37,7 +37,7 @@ export default function LastPets() {
         <div className='row mt-3 justify-content-between'>
           {pets.map((pet) => (
             <div key={pet.id} className='col-2'>
-              <div className='card petscare-background'>
+              <div className='card petscare-background petscare-last-pets-card'>
                 <img
                   className='card-img-top'
                   src={`${
@@ -47,7 +47,7 @@ export default function LastPets() {
                   }${randomInt(600, 650)}/600`}
                   alt={pet.name}
                 />
-                <div className='card-body mh-100'>
+                <div className='card-body'>
                   <h5 className='card-title text-center petscare-brand'>
                     {pet.name}
                   </h5>

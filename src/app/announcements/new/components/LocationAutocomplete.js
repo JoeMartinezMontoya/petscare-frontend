@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const OPENCAGE_API_KEY = '783e47de678145319e80341be8277c44';
+const OPENCAGE_API_KEY = `${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`;
 
 export default function LocationAutocomplete({ onSelect }) {
   const [query, setQuery] = useState('');

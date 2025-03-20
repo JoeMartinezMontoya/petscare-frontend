@@ -9,7 +9,7 @@ async function fetchUserPets() {
   const response = await axios.get(
     `${
       process.env.NEXT_PUBLIC_PETS_API_URL
-    }/api/pets/user/${sessionStorage.getItem('userId')}`,
+    }/private/api/pets/user/${sessionStorage.getItem('userId')}`,
     {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
@@ -21,7 +21,7 @@ async function fetchUserPets() {
 
 async function sendAnnouncementForm(formData) {
   const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/api/announcements/create-announcement`,
+    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/private/api/announcements/create-announcement`,
     formData,
     {
       headers: {
@@ -29,16 +29,12 @@ async function sendAnnouncementForm(formData) {
       },
     }
   );
-
-  console.log(response);
-
-  return response;
+  return response.data.announcementCreated[0]; // Retourne l'ID de l'annonce créée
 }
 
 export default function PetLostAnnouncementForm({ type }) {
   const [formData, setFormData] = useState({
     title: 'Avis de disparition',
-    content: 'Alerte',
     type: type,
     starting_date: '',
     contact_info: '',
@@ -48,6 +44,9 @@ export default function PetLostAnnouncementForm({ type }) {
     longitude: null,
     user_id: sessionStorage.getItem('userId'),
   });
+
+  const [loading, setLoading] = useState(false);
+  const [announcementId, setAnnouncementId] = useState(null);
 
   const {
     data: userPets,
@@ -72,8 +71,6 @@ export default function PetLostAnnouncementForm({ type }) {
   };
 
   const handleLocationSelect = (place) => {
-    console.log('Données de localisation reçues:', place);
-
     setFormData((prev) => ({
       ...prev,
       location: place.formatted,
@@ -81,10 +78,10 @@ export default function PetLostAnnouncementForm({ type }) {
       longitude: place.geometry.lng,
     }));
   };
+
   const handleChangeDate = (e) => {
     const newDate = new Date(e.target.value).toISOString().split('T')[0];
     setFormData((prev) => ({ ...prev, starting_date: newDate }));
-    console.log(newDate);
   };
 
   const handlePetSelectChange = (selectedOptions) => {
@@ -92,11 +89,19 @@ export default function PetLostAnnouncementForm({ type }) {
     setFormData((prev) => ({ ...prev, pet_ids: selectedPetIds }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setLoading(true); // Active l'état de chargement
+    setAnnouncementId(null); // Reset si une nouvelle soumission
 
-    sendAnnouncementForm(formData);
+    try {
+      const newId = await sendAnnouncementForm(formData);
+      setAnnouncementId(newId); // Stocke l'ID de l'annonce
+    } catch (error) {
+      console.error('Erreur lors de la création de l’annonce:', error);
+    } finally {
+      setLoading(false); // Désactive l'état de chargement
+    }
   };
 
   return (
@@ -109,10 +114,9 @@ export default function PetLostAnnouncementForm({ type }) {
             <div className='alert alert-danger'>
               <strong>Chaque seconde compte !</strong>
               <br /> Nous allons fournir toutes les informations supplémentaires
-              concernant les caractéristiques physique sur l&apos;annonce qui
-              sera générée, un bouton de partage sur les réseaux sociaux sera
-              présent dans celle-ci, ainsi qu&apos;une affiche à imprimer et
-              poster dans votre voisinnage
+              concernant les caractéristiques physiques sur l&apos;annonce qui
+              sera générée. Un bouton de partage sur les réseaux sociaux sera
+              présent ainsi qu&apos;une affiche à imprimer.
             </div>
           </div>
           <div className='form-group col'>
@@ -146,7 +150,7 @@ export default function PetLostAnnouncementForm({ type }) {
 
         <div className='row mt-3'>
           <div className='form-group col'>
-            <label className=' form-label petscare-brand'>
+            <label className='form-label petscare-brand'>
               Des informations concernant le moyen de contact ?
             </label>
             <textarea
@@ -178,9 +182,27 @@ export default function PetLostAnnouncementForm({ type }) {
 
         <div className='row mt-5'>
           <div className='form-group col'>
-            <button type='submit' className='btn btn-primary col-3'>
-              Publier l&apos;annonce
-            </button>
+            {announcementId ? (
+              <a
+                href={`/announcements/${announcementId}`}
+                className='btn btn-success col-3'>
+                Voir votre annonce
+              </a>
+            ) : (
+              <button
+                type='submit'
+                className='btn btn-primary col-3'
+                disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className='spinner-border spinner-border-sm me-2'></span>
+                    Envoi en cours...
+                  </>
+                ) : (
+                  'Publier l’annonce'
+                )}
+              </button>
+            )}
           </div>
         </div>
       </form>

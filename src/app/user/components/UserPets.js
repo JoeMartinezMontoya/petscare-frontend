@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 
 async function fetchUserPets() {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_PETS_API_URL}/api/pets/user/1`,
+    `${process.env.NEXT_PUBLIC_PETS_API_URL}/private/api/pets/user/1`,
     {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,

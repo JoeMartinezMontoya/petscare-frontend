@@ -32,7 +32,7 @@ export default function UserAddPetModal({ userId }) {
     const token = sessionStorage.getItem('authToken');
     const response = await axios
       .post(
-        `${apiUrl}/api/pets/create-pet`,
+        `${apiUrl}/private/api/pets/create-pet`,
         {
           name: formData.name,
           species: formData.species,
