@@ -10,6 +10,7 @@ import { MdAnnouncement } from 'react-icons/md';
 import { CiLogout } from 'react-icons/ci';
 import UserData from './components/UserData';
 import UserPets from './components/UserPets';
+import UserAnnouncements from './components/UserAnnouncements';
 
 export default function UserPage() {
   const { isAuthenticated, logout } = useAuth();
@@ -28,7 +29,7 @@ export default function UserPage() {
       case 'user-pets':
         return <UserPets pets={pets} isLoading={isLoading} />;
       case 'user-announcements':
-        return <h6 className='petscare-brand'>Mes annonces</h6>;
+        return <UserAnnouncements user={user} />;
       case 'user-preferences':
         return <h6 className='petscare-brand'>Mes préférences</h6>;
 

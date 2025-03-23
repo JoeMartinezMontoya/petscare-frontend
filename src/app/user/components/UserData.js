@@ -2,9 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import { FaAddressCard, FaBirthdayCake, FaPenFancy } from 'react-icons/fa';
 import { BsCardChecklist } from 'react-icons/bs';
-import { MdEmail } from 'react-icons/md';
+import { MdEmail, MdOutlinePassword } from 'react-icons/md';
 import { GiPawHeart } from 'react-icons/gi';
 import dayjs from 'dayjs';
+import { FaTrashCan } from 'react-icons/fa6';
 
 export default function UserData({ userData }) {
   dayjs.locale('fr');
@@ -68,10 +69,22 @@ export default function UserData({ userData }) {
         </tbody>
       </table>
       <div className='row my-4 align-items-center'>
-        <div className='col-4'>
-          <button className='btn btn-info'>
+        <div className='col'>
+          <button className='btn btn-sm btn-info'>
             <FaPenFancy className='mx-2 fs-4' />
             Modifier mes informations
+          </button>
+        </div>
+        <div className='col'>
+          <button className='btn btn-sm btn-info'>
+            <MdOutlinePassword className='mx-2 fs-4' />
+            Modifier mon mot de passe
+          </button>
+        </div>
+        <div className='col'>
+          <button className='btn btn-sm btn-danger'>
+            <FaTrashCan className='mx-2 fs-4' />
+            Supprimer mon compte
           </button>
         </div>
       </div>
