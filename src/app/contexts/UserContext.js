@@ -1,3 +1,4 @@
+'use client';
 import React, { createContext, useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -8,8 +9,8 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
-  const userId = sessionStorage?.getItem('userId');
-  const token = sessionStorage?.getItem('authToken');
+  const userId = sessionStorage.getItem('userId');
+  const token = sessionStorage.getItem('authToken');
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['user-data', userId],
@@ -36,10 +37,7 @@ export const UserProvider = ({ children }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      return JSON.parse(response.data['user-pets']).map((pet) => ({
-        id: pet.id,
-        name: pet.name,
-      }));
+      return JSON.parse(response.data['user-pets']);
     },
     enabled: !!userId,
   });

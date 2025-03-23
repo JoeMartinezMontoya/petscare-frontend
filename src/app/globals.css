@@ -127,3 +127,8 @@ table tr th {
 .petscare-last-pets-card{
   height: 230px;
 }
+
+.petscare-profile-sidebar {
+  height: 95.5vh;
+  border-top-right-radius: 1rem;
+}
