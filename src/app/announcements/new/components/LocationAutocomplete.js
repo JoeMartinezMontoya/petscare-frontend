@@ -7,14 +7,17 @@ export default function LocationAutocomplete({ onSelect }) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  const [isSelecting, setIsSelecting] = useState(false);
 
   useEffect(() => {
+    if (isSelecting) return;
+
     const handler = setTimeout(() => setDebouncedQuery(query), 300);
     return () => clearTimeout(handler);
   }, [query]);
 
   useEffect(() => {
-    if (!debouncedQuery) {
+    if (!debouncedQuery || isSelecting) {
       setSuggestions([]);
       return;
     }
@@ -43,15 +46,19 @@ export default function LocationAutocomplete({ onSelect }) {
         className='form-control'
         placeholder='Entrez une adresse...'
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => {
+          setIsSelecting(false);
+          setQuery(e.target.value);
+        }}
       />
       {suggestions.length > 0 && (
         <ul className='list-group position-absolute w-100'>
           {suggestions.map((place) => (
             <li
-              key={place.formatted}
+              key={`${place.geometry.lat}-${place.geometry.lng}`}
               className='list-group-item list-group-item-action'
               onClick={() => {
+                setIsSelecting(true);
                 onSelect({
                   formatted: place.formatted,
                   geometry: {

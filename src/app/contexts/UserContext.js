@@ -8,8 +8,8 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
-  const userId = sessionStorage.getItem('userId');
-  const token = sessionStorage.getItem('authToken');
+  const userId = sessionStorage?.getItem('userId');
+  const token = sessionStorage?.getItem('authToken');
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['user-data', userId],

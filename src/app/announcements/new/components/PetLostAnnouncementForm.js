@@ -8,8 +8,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function PetLostAnnouncementForm({ type }) {
   const { user, pets, loading } = useUser();
-  const queryClient = useQueryClient(); // 🔥 React Query pour gérer le cache
-
+  const queryClient = useQueryClient();
+  const [announcementIds, setAnnouncementIds] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: 'Avis de disparition',
     type: type,
@@ -20,8 +21,6 @@ export default function PetLostAnnouncementForm({ type }) {
     latitude: null,
     longitude: null,
   });
-
-  const [announcementIds, setAnnouncementIds] = useState(null);
 
   const petOptions = pets.map((pet) => ({
     value: pet.id,
@@ -43,8 +42,11 @@ export default function PetLostAnnouncementForm({ type }) {
     return response.data.announcementCreated;
   };
 
-  const { mutate, isLoading: submitting } = useMutation({
+  const mutation = useMutation({
     mutationFn: createAnnouncement,
+    onMutate: () => {
+      setIsSubmitting(true);
+    },
     onSuccess: (announcementCreated) => {
       console.log('Annonces créées avec les IDs:', announcementCreated);
       setAnnouncementIds(announcementCreated);
@@ -52,6 +54,9 @@ export default function PetLostAnnouncementForm({ type }) {
     },
     onError: (error) => {
       console.error("Erreur lors de la création de l'annonce:", error);
+    },
+    onSettled: () => {
+      setIsSubmitting(false);
     },
   });
 
@@ -82,15 +87,19 @@ export default function PetLostAnnouncementForm({ type }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     setAnnouncementIds(null);
-    mutate(formData);
+    mutation.mutate(formData);
   };
 
   const handleOpenAnnouncements = () => {
-    sessionStorage.setItem(
-      'lastAnnouncementIds',
-      JSON.stringify(announcementIds)
-    );
-    window.location.href = '/redirect-announcements';
+    sessionStorage.setItem('lastAnnouncementIds', announcementIds);
+    const lastAnnouncements = sessionStorage
+      .getItem('lastAnnouncementIds')
+      .split(',');
+
+    window.location.href =
+      lastAnnouncements.length === 1
+        ? `/announcements/${lastAnnouncements}`
+        : '/redirect-announcements';
   };
 
   return (
@@ -147,6 +156,7 @@ export default function PetLostAnnouncementForm({ type }) {
               className='form-control'
               onChange={handleChange}
               name='contact_info'
+              rows={6}
               required
             />
           </div>
@@ -175,8 +185,8 @@ export default function PetLostAnnouncementForm({ type }) {
               <button
                 type='submit'
                 className='btn btn-primary col-3'
-                disabled={submitting}>
-                {submitting ? (
+                disabled={isSubmitting}>
+                {isSubmitting ? (
                   <>
                     <span className='spinner-border spinner-border-sm me-2'></span>
                     Envoi en cours...
