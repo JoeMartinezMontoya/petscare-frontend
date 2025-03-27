@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import AnnouncementForm from './components/PetLostAnnouncementForm';
+import PetLostAnnouncementForm from './components/PetLostAnnouncementForm';
 
 export default function NewAnnounce() {
   const [selectedForm, setSelectedForm] = useState(null);
@@ -13,7 +13,13 @@ export default function NewAnnounce() {
   };
 
   const formDisplay = (type) => {
-    return <AnnouncementForm type={type} />;
+    switch (type) {
+      case 'disparition':
+        return <PetLostAnnouncementForm />;
+
+      default:
+        break;
+    }
   };
 
   return (

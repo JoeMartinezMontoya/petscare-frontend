@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useUser } from './UserContext';
 import { useQueryClient } from '@tanstack/react-query';
 
 const AuthContext = createContext();
@@ -10,22 +9,25 @@ export const AuthProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const token = sessionStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken');
     setIsAuthenticated(!!token);
   }, []);
 
   const login = async (id, token) => {
-    sessionStorage.setItem('authToken', token);
-    sessionStorage.setItem('userId', id);
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('userId', id);
     setIsAuthenticated(true);
 
     await queryClient.invalidateQueries(['user-data']);
     await queryClient.invalidateQueries(['user-pets']);
+
+    queryClient.refetchQueries(['user-data']);
+    queryClient.refetchQueries(['user-pets']);
   };
 
   const logout = () => {
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('userId');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
     setIsAuthenticated(false);
 
     queryClient.removeQueries(['user-data']);

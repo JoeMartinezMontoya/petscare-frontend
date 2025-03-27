@@ -6,14 +6,14 @@ import LocationAutocomplete from './LocationAutocomplete';
 import { useUser } from '@/app/contexts/UserContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export default function PetLostAnnouncementForm({ type }) {
+export default function PetLostAnnouncementForm() {
   const { user, pets, loading } = useUser();
   const queryClient = useQueryClient();
   const [announcementIds, setAnnouncementIds] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: 'Avis de disparition',
-    type: type,
+    type: 'LOST',
     starting_date: '',
     contact_info: '',
     pet_ids: [],
@@ -35,7 +35,7 @@ export default function PetLostAnnouncementForm({ type }) {
       { ...data, user_id: user.id },
       {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem('authToken')}`,
+          Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       }
     );
@@ -91,6 +91,7 @@ export default function PetLostAnnouncementForm({ type }) {
   };
 
   const handleOpenAnnouncements = () => {
+    sessionStorage.setItem('selectedSection', 'user-announcements');
     sessionStorage.setItem('lastAnnouncementIds', announcementIds);
     const lastAnnouncements = sessionStorage
       .getItem('lastAnnouncementIds')
@@ -99,12 +100,12 @@ export default function PetLostAnnouncementForm({ type }) {
     window.location.href =
       lastAnnouncements.length === 1
         ? `/announcements/${lastAnnouncements}`
-        : '/redirect-announcements';
+        : '/user';
   };
 
   return (
     <>
-      <h2 className='petscare-brand'>Avis de {type}</h2>
+      <h2 className='petscare-brand'>Avis de disparition</h2>
 
       <form onSubmit={handleSubmit} className='d-flex flex-column'>
         <div className='row'>

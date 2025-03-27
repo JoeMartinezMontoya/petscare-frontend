@@ -9,8 +9,10 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
   const queryClient = useQueryClient();
 
-  const userId = sessionStorage.getItem('userId');
-  const token = sessionStorage.getItem('authToken');
+  const userId =
+    typeof window !== 'undefined' ? localStorage.getItem('userId') : null;
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
 
   const { data: user, isLoading } = useQuery({
     queryKey: ['user-data', userId],
@@ -25,6 +27,8 @@ export const UserProvider = ({ children }) => {
       return response.data.userData;
     },
     enabled: !!userId,
+    staleTime: Infinity,
+    cacheTime: 60 * 60 * 1000,
   });
 
   const { data: pets = [] } = useQuery({
@@ -40,6 +44,8 @@ export const UserProvider = ({ children }) => {
       return JSON.parse(response.data['user-pets']);
     },
     enabled: !!userId,
+    staleTime: Infinity,
+    cacheTime: 60 * 60 * 1000,
   });
 
   return (

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import UserLoading from './components/UserLoading';
 import UserNotAuthenticated from './components/UserNotAuthenticated';
@@ -15,7 +15,13 @@ import UserAnnouncements from './components/UserAnnouncements';
 export default function UserPage() {
   const { isAuthenticated, logout } = useAuth();
   const { user, pets, isLoading } = useUser();
-  const [selectedSection, setSelectedSection] = useState('');
+  const [selectedSection, setSelectedSection] = useState(
+    sessionStorage.getItem('selectedSection') || ''
+  );
+
+  useEffect(() => {
+    sessionStorage.removeItem('selectedSection');
+  }, []);
 
   const handleClick = (e) => {
     e.preventDefault;
@@ -46,7 +52,7 @@ export default function UserPage() {
         {
           //? Left side
         }
-        <div className='col-3 d-flex flex-column justify-content-between petscare-background petscare-profile-sidebar'>
+        <div className='col-3 d-flex flex-column petscare-background petscare-profile-sidebar'>
           {
             //? Top section
           }
@@ -96,7 +102,7 @@ export default function UserPage() {
           {
             //? Bottom section
           }
-          <div className='row'>
+          <div className='row mt-auto'>
             <button className='btn btn-danger py-2' onClick={logout}>
               <CiLogout className='mx-2 fs-4' /> Se déconnecter
             </button>
