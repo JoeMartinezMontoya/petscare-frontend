@@ -22,7 +22,7 @@ async function fetchUserAnnouncements(userId) {
 
 export default function UserAnnouncements({ user }) {
   const [page, setPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 4;
 
   const {
     data: announcements,
@@ -58,15 +58,18 @@ export default function UserAnnouncements({ user }) {
         <h1 className='petscare-brand col'>Mes annonces</h1>
       </div>
 
-      <div className='row card-deck'>
+      <div
+        className='row row-cols-1 row-cols-sm-2
+       row-cols-xxl-4 justify-content-start'>
         {isLoading
-          ? Array.from({ length: 6 }).map((_, index) => (
+          ? Array.from({ length: 4 }).map((_, index) => (
               <AnnouncementCardSkeleton key={index} />
             ))
           : displayedAnnouncements.map((announcement) => (
               <AnnouncementCard
-                announcement={announcement}
                 key={announcement.id}
+                announcement={announcement}
+                fullView={false}
               />
             ))}
       </div>

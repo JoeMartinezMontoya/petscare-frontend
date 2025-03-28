@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import PetLostAnnouncementForm from './components/PetLostAnnouncementForm';
+import Image from 'next/image';
 
 export default function NewAnnounce() {
   const [selectedForm, setSelectedForm] = useState(null);
@@ -14,7 +15,7 @@ export default function NewAnnounce() {
 
   const formDisplay = (type) => {
     switch (type) {
-      case 'disparition':
+      case 'lost':
         return <PetLostAnnouncementForm />;
 
       default:
@@ -24,12 +25,12 @@ export default function NewAnnounce() {
 
   return (
     <>
-      <div className='row mt-5 p-5 petscare-background text-center'>
+      <div className='row my-4 p-5 petscare-background text-center'>
         <h1 className='petscare-brand'>Que voulez vous publier ?</h1>
         <div className='row mt-5 justify-content-around'>
           <button
             className='btn btn-primary col-2'
-            data-announcement-type='disparition'
+            data-announcement-type='lost'
             onClick={handleClick}>
             Avis de recherche
           </button>
@@ -55,7 +56,18 @@ export default function NewAnnounce() {
       </div>
 
       <div className='container mt-5'>
-        {isFormSelected === true && formDisplay(selectedForm)}
+        {isFormSelected === true ? (
+          formDisplay(selectedForm)
+        ) : (
+          <div className='row'>
+            <Image
+              src='/images/pets_group.png'
+              alt='Annonce placeholder'
+              width={25}
+              height={800}
+            />
+          </div>
+        )}
       </div>
     </>
   );

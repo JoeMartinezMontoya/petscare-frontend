@@ -5,10 +5,13 @@ import React from 'react';
 import { CgMoreO } from 'react-icons/cg';
 import { FaEye } from 'react-icons/fa';
 
-export default function AnnouncementCard({ announcement }) {
+export default function AnnouncementCard({ announcement, fullView = true }) {
   return (
-    <div className='col mx-auto my-2'>
-      <div className='card petscare-background'>
+    <div className='col my-2'>
+      <div
+        className={`card petscare-background${
+          !fullView ? ' petscare-user-announcement-card' : ''
+        }`}>
         <Image
           className='card-img-top'
           src='https://placehold.co/400x200'
@@ -20,9 +23,11 @@ export default function AnnouncementCard({ announcement }) {
           <h5 className='card-title my-0 petscare-brand'>
             {announcement.type_label}
           </h5>
-          <small className='text-body-secondary petscare-brand'>
-            {announcement.location}
-          </small>
+          {fullView && (
+            <small className='text-body-secondary petscare-brand'>
+              {announcement.location}
+            </small>
+          )}
         </div>
         <div className='card-body'>
           <h4 className='petscare-brand'>{announcement.title}</h4>

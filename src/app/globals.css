@@ -124,7 +124,11 @@ table tr th {
   height: 230px;
 }
 
+.petscare-user-announcement-card{
+  height: 450px;
+}
+
 .petscare-profile-sidebar {
-  height: 95.5vh;
+  height: 95.6vh;
   border-top-right-radius: 1rem;
 }

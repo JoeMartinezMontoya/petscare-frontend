@@ -12,10 +12,8 @@ export default function PetLostAnnouncementForm() {
   const [announcementIds, setAnnouncementIds] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    title: 'Avis de disparition',
-    type: 'LOST',
+    content: '',
     starting_date: '',
-    contact_info: '',
     pet_ids: [],
     location: '',
     latitude: null,
@@ -28,11 +26,9 @@ export default function PetLostAnnouncementForm() {
   }));
 
   const createAnnouncement = async (data) => {
-    console.log(user);
-
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/private/api/announcements/create-announcement`,
-      { ...data, user_id: user.id },
+      { ...data, type: 'lost', user_id: user.id },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
@@ -156,7 +152,7 @@ export default function PetLostAnnouncementForm() {
             <textarea
               className='form-control'
               onChange={handleChange}
-              name='contact_info'
+              name='content'
               rows={6}
               required
             />
