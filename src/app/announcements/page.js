@@ -1,8 +1,10 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import dayjs from 'dayjs';
 import Link from 'next/link';
 import React from 'react';
+import { FaEye } from 'react-icons/fa';
 
 async function fetchAnnouncements() {
   const response = await axios.get(
@@ -23,6 +25,8 @@ export default function AnnouncementsPage() {
     gcTime: 600000,
   });
 
+  console.log(announcements);
+
   return (
     <>
       <div className='row mt-5 p-5 petscare-background text-center'>
@@ -38,16 +42,19 @@ export default function AnnouncementsPage() {
           <div key={announcement.id} className='col-4 my-3'>
             <div className='card petscare-background petscare-announce-card'>
               <div className='card-header text-center'>
-                {announcement.title}
+                {announcement.type_label} - {announcement.location ?? 'Lyon'}
               </div>
               <div className='card-body'>
-                <p className='card-text'>{announcement.content}</p>
-                <p className='card-text'>{announcement?.location}</p>
+                <p className='card-text'>{announcement.title}</p>
+                <p className='card-text'>{announcement.content_excerpt}</p>
               </div>
               <div className='card-footer'>
                 <div className='row justify-content-between align-items-center'>
                   <div className='col-4'>
-                    {new Date(announcement.createdAt).toLocaleDateString()}
+                    {dayjs(announcement.createdAt).format('DD/MM/YYYY')}
+                  </div>
+                  <div className='col-4'>
+                    <FaEye /> {announcement.views_count}
                   </div>
                   <div className='col-2'>
                     <Link

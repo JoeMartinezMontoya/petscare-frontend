@@ -6,6 +6,7 @@ import React from 'react';
 import axios from 'axios';
 import { FaBackward, FaPrint, FaShare } from 'react-icons/fa';
 import MapComponent from '../new/components/MapComponent';
+import dayjs from 'dayjs';
 
 async function fetchAnnouncementData(id) {
   if (!id) throw new Error('ID manquant');
@@ -44,9 +45,9 @@ export default function AnnouncementDisplay() {
     isLoading: isPetLoading,
     error: petError,
   } = useQuery({
-    queryKey: ['lostPet', announcement?.petIds?.[0]],
-    queryFn: () => fetchPetData(announcement.petIds[0]),
-    enabled: !!announcement?.petIds,
+    queryKey: ['lostPet', announcement?.pet_ids?.[0]],
+    queryFn: () => fetchPetData(announcement.pet_ids[0]),
+    enabled: !!announcement?.pet_ids,
     staleTime: 600000,
     gcTime: 600000,
   });
@@ -54,6 +55,7 @@ export default function AnnouncementDisplay() {
   if (lostPet && announcement) {
     console.log(lostPet, announcement);
   }
+
   if (isAnnouncementLoading) return <p>Chargement de l&apos;annonce...</p>;
   if (announcementError) return <p>Erreur: {announcementError.message}</p>;
 
@@ -78,7 +80,7 @@ export default function AnnouncementDisplay() {
             <div className='col-2'>{announcement.status}</div>
             <div className='col-2'>
               <h6 className='petscare-brand pt-2'>
-                {new Date(announcement.createdAt).toLocaleDateString()}
+                {dayjs(announcement.createdAt).format('DD/MM/YYYY')}
               </h6>
             </div>
           </div>
