@@ -58,11 +58,9 @@ export default function UserAnnouncements({ user }) {
         <h1 className='petscare-brand col'>Mes annonces</h1>
       </div>
 
-      <div
-        className='row row-cols-1 row-cols-sm-2
-       row-cols-xxl-4 justify-content-start'>
+      <div className='row row-cols-1 row-cols-sm-2 row-cols-xxl-4 justify-content-start'>
         {isLoading
-          ? Array.from({ length: 4 }).map((_, index) => (
+          ? [...Array(4)].map((_, index) => (
               <AnnouncementCardSkeleton key={index} />
             ))
           : displayedAnnouncements.map((announcement) => (
