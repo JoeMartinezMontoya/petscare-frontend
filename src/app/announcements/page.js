@@ -1,10 +1,10 @@
 'use client';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import dayjs from 'dayjs';
 import Link from 'next/link';
 import React from 'react';
-import { FaEye } from 'react-icons/fa';
+import AnnouncementCard from './new/components/AnnouncementCard';
+import AnnouncementCardSkeleton from './new/components/AnnouncementCardSkeleton';
 
 async function fetchAnnouncements() {
   const response = await axios.get(
@@ -21,54 +21,35 @@ export default function AnnouncementsPage() {
   } = useQuery({
     queryKey: ['announcements'],
     queryFn: fetchAnnouncements,
-    staleTime: 600000,
-    gcTime: 600000,
+    staleTime: Infinity,
+    gcTime: 1800000,
   });
-
-  console.log(announcements);
 
   return (
     <>
-      <div className='row mt-5 p-5 petscare-background text-center'>
-        <h1 className='petscare-brand'>Nos annonces</h1>
-        <div className='row mt-3 justify-content-center'>
-          <Link href='/announcements/new' className='btn btn-primary col-3'>
-            Publier une annonce
-          </Link>
+      <div className='row my-4 p-5 petscare-background text-center'>
+        <div className='d-flex flex-column'>
+          <h1 className='petscare-brand'>Nos annonces</h1>
+          <div className='row mt-3 justify-content-center'>
+            <Link href='/announcements/new' className='btn btn-primary w-auto'>
+              Publier une annonce
+            </Link>
+          </div>
         </div>
       </div>
-      <div className='row mt-3 justify-content-between'>
-        {announcements?.map((announcement) => (
-          <div key={announcement.id} className='col-4 my-3'>
-            <div className='card petscare-background petscare-announce-card'>
-              <div className='card-header text-center'>
-                {announcement.type_label} - {announcement.location ?? 'Lyon'}
-              </div>
-              <div className='card-body'>
-                <p className='card-text'>{announcement.title}</p>
-                <p className='card-text'>{announcement.content_excerpt}</p>
-              </div>
-              <div className='card-footer'>
-                <div className='row justify-content-between align-items-center'>
-                  <div className='col-4'>
-                    {dayjs(announcement.createdAt).format('DD/MM/YYYY')}
-                  </div>
-                  <div className='col-4'>
-                    <FaEye /> {announcement.views_count}
-                  </div>
-                  <div className='col-2'>
-                    <Link
-                      href={`/announcements/${announcement.id}`}
-                      className='btn btn-info'>
-                      Voir
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-        );
+      <div className='container-fluid'>
+        <div className='row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xxl-6 justify-content-start'>
+          {isLoading
+            ? [...Array(12)].map((_, index) => (
+                <AnnouncementCardSkeleton key={index} />
+              ))
+            : announcements?.map((announcement) => (
+                <AnnouncementCard
+                  key={announcement.id}
+                  announcement={announcement}
+                />
+              ))}
+        </div>
       </div>
     </>
   );
