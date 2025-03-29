@@ -9,8 +9,10 @@ export default function AnnouncementCard({ announcement, fullView = true }) {
   return (
     <div className='col my-2'>
       <div
-        className={`card petscare-background${
-          !fullView ? ' petscare-user-announcement-card' : ''
+        className={`card petscare-background ${
+          !fullView
+            ? 'petscare-user-announcement-card'
+            : 'petscare-announcement-card'
         }`}>
         <Image
           className='card-img-top'
@@ -19,14 +21,20 @@ export default function AnnouncementCard({ announcement, fullView = true }) {
           width={400}
           height={200}
         />
-        <div className='card-header d-flex align-items-end justify-content-between'>
-          <h5 className='card-title my-0 petscare-brand'>
+        <div className='card-header d-flex align-items-center justify-content-between'>
+          <h5 className='card-title my-0 col-8 petscare-brand'>
             {announcement.type_label}
           </h5>
           {fullView && (
-            <small className='text-body-secondary petscare-brand'>
-              {announcement.location}
-            </small>
+            <div className='col-4 d-flex flex-column text-center'>
+              <small className='text-body-secondary petscare-brand'>
+                {announcement.city}
+              </small>
+
+              <small className='text-body-secondary petscare-brand'>
+                {announcement.postcode}
+              </small>
+            </div>
           )}
         </div>
         <div className='card-body'>

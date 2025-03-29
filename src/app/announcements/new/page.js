@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import PetLostAnnouncementForm from './components/PetLostAnnouncementForm';
+import PetLostAnnouncementForm from './components/LostAnnouncementForm';
 import Image from 'next/image';
 
 export default function NewAnnounce() {

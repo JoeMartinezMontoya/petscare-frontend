@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+//TODO: Optimization : API error handling
 const OPENCAGE_API_KEY = `${process.env.NEXT_PUBLIC_OPEN_CAGE_API_KEY}`;
 
 export default function LocationAutocomplete({ onSelect }) {
@@ -9,6 +10,7 @@ export default function LocationAutocomplete({ onSelect }) {
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isSelecting, setIsSelecting] = useState(false);
 
+  //? Debounce the query to prevent API spam
   useEffect(() => {
     if (isSelecting) return;
 
@@ -16,6 +18,7 @@ export default function LocationAutocomplete({ onSelect }) {
     return () => clearTimeout(handler);
   }, [query]);
 
+  //? Prevent the suggestion list from open back up when an option is selected
   useEffect(() => {
     if (!debouncedQuery || isSelecting) {
       setSuggestions([]);
@@ -29,6 +32,7 @@ export default function LocationAutocomplete({ onSelect }) {
             debouncedQuery
           )}&key=${OPENCAGE_API_KEY}&language=fr&limit=5`
         );
+        console.log('Données OpenCage:', JSON.stringify(data.results, null, 2));
 
         setSuggestions(data.results);
       } catch (error) {
@@ -61,6 +65,14 @@ export default function LocationAutocomplete({ onSelect }) {
                 setIsSelecting(true);
                 onSelect({
                   formatted: place.formatted,
+                  city:
+                    place.components?.city ||
+                    place.components?.town ||
+                    place.components?.village ||
+                    place.components?.local_administrative_area ||
+                    place.components?.county ||
+                    null,
+                  postcode: place.components?.postcode || null,
                   geometry: {
                     lat: place.geometry.lat,
                     lng: place.geometry.lng,

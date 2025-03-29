@@ -6,7 +6,7 @@ import LocationAutocomplete from './LocationAutocomplete';
 import { useUser } from '@/app/contexts/UserContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-export default function PetLostAnnouncementForm() {
+export default function LostAnnouncementForm() {
   const { user, pets, loading } = useUser();
   const queryClient = useQueryClient();
   const [announcementIds, setAnnouncementIds] = useState(null);
@@ -16,6 +16,8 @@ export default function PetLostAnnouncementForm() {
     starting_date: '',
     pet_ids: [],
     location: '',
+    city: '',
+    postcode: '',
     latitude: null,
     longitude: null,
   });
@@ -62,9 +64,13 @@ export default function PetLostAnnouncementForm() {
   };
 
   const handleLocationSelect = (place) => {
+    console.log(place);
+
     setFormData((prev) => ({
       ...prev,
       location: place.formatted,
+      city: place.city,
+      postcode: place.postcode,
       latitude: place.geometry.lat,
       longitude: place.geometry.lng,
     }));
@@ -147,7 +153,7 @@ export default function PetLostAnnouncementForm() {
         <div className='row mt-3'>
           <div className='form-group col'>
             <label className='form-label petscare-brand'>
-              Des informations concernant le moyen de contact ?
+              Des informations supplémentaires ?
             </label>
             <textarea
               className='form-control'
