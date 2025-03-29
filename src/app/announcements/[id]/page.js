@@ -12,7 +12,7 @@ async function fetchAnnouncementData(id) {
   const response = await axios.get(
     `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/public/api/announcements/${id}`
   );
-  return JSON.parse(response.data['announcementData']);
+  return JSON.parse(response.data.data['announcementData']);
 }
 
 export default function Announcement() {

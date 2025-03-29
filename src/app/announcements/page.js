@@ -10,7 +10,8 @@ async function fetchAnnouncements() {
   const response = await axios.get(
     `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/public/api/announcements`
   );
-  return JSON.parse(response.data['announcements']);
+
+  return JSON.parse(response.data.data['announcements']);
 }
 
 export default function AnnouncementsPage() {
@@ -24,7 +25,6 @@ export default function AnnouncementsPage() {
     staleTime: Infinity,
     gcTime: 1800000,
   });
-
   return (
     <>
       <div className='row my-4 p-5 petscare-background text-center'>
