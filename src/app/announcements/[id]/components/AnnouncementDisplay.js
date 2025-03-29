@@ -2,6 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { FaBackward, FaEye, FaPrint, FaShare } from 'react-icons/fa';
 import MapComponent from '../../new/components/MapComponent';
+import AnnouncementViewCounter from './AnnouncementViewCounter';
 
 export default function AnnouncementDisplay({ announcement }) {
   return (
@@ -70,6 +71,7 @@ export default function AnnouncementDisplay({ announcement }) {
           </div>
         </div>
       </div>
+      <AnnouncementViewCounter announcementId={announcement.id} />
     </div>
   );
 }
