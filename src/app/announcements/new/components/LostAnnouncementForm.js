@@ -37,7 +37,7 @@ export default function LostAnnouncementForm() {
         },
       }
     );
-    return response.data.announcementCreated;
+    return response.data.data.announcementCreated;
   };
 
   const mutation = useMutation({
@@ -46,7 +46,6 @@ export default function LostAnnouncementForm() {
       setIsSubmitting(true);
     },
     onSuccess: (announcementCreated) => {
-      console.log('Annonces créées avec les IDs:', announcementCreated);
       setAnnouncementIds(announcementCreated);
       queryClient.invalidateQueries(['user-announcements']);
     },
@@ -64,8 +63,6 @@ export default function LostAnnouncementForm() {
   };
 
   const handleLocationSelect = (place) => {
-    console.log(place);
-
     setFormData((prev) => ({
       ...prev,
       location: place.formatted,

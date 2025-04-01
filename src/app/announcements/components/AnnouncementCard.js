@@ -56,8 +56,7 @@ export default function AnnouncementCard({ announcement, fullView = true }) {
             <div className='col-2 d-flex justify-content-end'>
               <Link
                 href={`/announcements/${announcement.id}`}
-                className='btn btn-sm btn-info petscare-brand d-flex align-items-center'
-                target='_blank'>
+                className='btn btn-sm btn-info petscare-brand d-flex align-items-center'>
                 <CgMoreO className='mx-2 fs-6' />
               </Link>
             </div>

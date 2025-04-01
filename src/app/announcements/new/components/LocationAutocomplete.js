@@ -32,7 +32,6 @@ export default function LocationAutocomplete({ onSelect }) {
             debouncedQuery
           )}&key=${OPENCAGE_API_KEY}&language=fr&limit=5`
         );
-        console.log('Données OpenCage:', JSON.stringify(data.results, null, 2));
 
         setSuggestions(data.results);
       } catch (error) {

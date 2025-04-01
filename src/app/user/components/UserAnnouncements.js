@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Image from 'next/image';
-import AnnouncementCard from '@/app/announcements/new/components/AnnouncementCard';
+import AnnouncementCard from '@/app/announcements/components/AnnouncementCard';
 import Pagination from '@/app/components/Pagination';
-import AnnouncementCardSkeleton from '@/app/announcements/new/components/AnnouncementCardSkeleton';
+import AnnouncementCardSkeleton from '@/app/announcements/components/AnnouncementCardSkeleton';
 
 async function fetchUserAnnouncements(userId) {
   const response = await axios.get(
@@ -17,7 +17,7 @@ async function fetchUserAnnouncements(userId) {
     }
   );
 
-  return JSON.parse(response.data.announcementsData.announcements);
+  return JSON.parse(response.data.data.announcementsData.announcements);
 }
 
 export default function UserAnnouncements({ user }) {
@@ -60,7 +60,7 @@ export default function UserAnnouncements({ user }) {
 
       <div className='row row-cols-1 row-cols-sm-2 row-cols-xxl-4 justify-content-start'>
         {isLoading
-          ? [...Array(4)].map((_, index) => (
+          ? [...Array(itemsPerPage)].map((_, index) => (
               <AnnouncementCardSkeleton key={index} />
             ))
           : displayedAnnouncements.map((announcement) => (

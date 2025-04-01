@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Link from 'next/link';
 import React from 'react';
-import AnnouncementCard from './new/components/AnnouncementCard';
-import AnnouncementCardSkeleton from './new/components/AnnouncementCardSkeleton';
+import AnnouncementCard from './components/AnnouncementCard';
+import AnnouncementCardSkeleton from './components/AnnouncementCardSkeleton';
 
 async function fetchAnnouncements() {
   const response = await axios.get(
