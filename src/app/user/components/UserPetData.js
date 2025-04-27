@@ -1,6 +1,9 @@
+import dayjs from 'dayjs';
 import React from 'react';
+require('dayjs/locale/fr');
 
 export default function UserPetData({ userPet }) {
+  dayjs.locale('fr');
   const randomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
@@ -21,7 +24,9 @@ export default function UserPetData({ userPet }) {
         </div>
         <div className='col'>
           <h3 className='petscare-brand'>{userPet.name}</h3>
-          <p className='small'>{new Date(userPet.birthDate).toString()}</p>
+          <p className='small'>
+            {dayjs(userPet.birthDate.date).format('DD MMMM YYYY')}
+          </p>
         </div>
       </div>
     </div>

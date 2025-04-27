@@ -32,6 +32,11 @@ export default function Navbar() {
                 Accueil
               </Link>
             </li>
+            <li className='nav-item'>
+              <Link href='/announcements' className='nav-link'>
+                Annonces
+              </Link>
+            </li>
             {isAuthenticated && (
               <>
                 <li>

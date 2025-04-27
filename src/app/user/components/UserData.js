@@ -1,69 +1,93 @@
 import React from 'react';
-import UserCarousel from './UserCarousel';
-import UserAddPetModal from './UserAddPetModal';
+import Image from 'next/image';
+import { FaAddressCard, FaBirthdayCake, FaPenFancy } from 'react-icons/fa';
+import { BsCardChecklist } from 'react-icons/bs';
+import { MdEmail, MdOutlinePassword } from 'react-icons/md';
+import { GiPawHeart } from 'react-icons/gi';
+import dayjs from 'dayjs';
+import { FaTrashCan } from 'react-icons/fa6';
 
-export default function UserData({
-  userData,
-  formattedCreatedAt,
-  formattedBirthDate,
-}) {
+export default function UserData({ userData }) {
+  dayjs.locale('fr');
   return (
     <>
-      <div className='col-12 col-md-6 mx-auto p-5'>
-        <div className='row'>
-          <div className='row my-4 align-items-center'>
-            <img
-              src='https://placehold.co/200x200'
-              className='col-2'
-              alt='profile picture'
-            />
-            <h1 className='petscare-brand col-10'>
-              Bonjour {userData.userName}
-            </h1>
-          </div>
-          <table className='table table-borderless'>
-            <tbody>
-              <tr>
-                <th scope='row'>
-                  <i className='bi bi-card-checklist'></i> Pseudonyme
-                </th>
-                <td colSpan='2'>{userData.userName}</td>
-              </tr>
-              <tr>
-                <th scope='row'>
-                  <i className='bi bi-person-badge'></i> Nom
-                </th>
-                <td colSpan='2'>
-                  {userData.firstName} {userData.lastName}
-                </td>
-              </tr>
-              <tr>
-                <th scope='row'>
-                  <i className='bi bi-mailbox2'></i> Email
-                </th>
-                <td colSpan='2'>{userData.email}</td>
-              </tr>
-              <tr>
-                <th scope='row'>
-                  <i className='bi bi-calendar-date'></i> Date de naissance
-                </th>
-                <td colSpan='2'>{formattedBirthDate}</td>
-              </tr>
-              <tr>
-                <th scope='row'>
-                  <i className='bi bi-calendar2-check'></i> Membre depuis le
-                </th>
-                <td colSpan='2'>{formattedCreatedAt}</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div className='row mt-4'>
-            <UserAddPetModal userId={userData.id} />
-          </div>
+      <div className='row my-4 align-items-center'>
+        <div className='col-2'>
+          <Image
+            src='https://placehold.co/100x100'
+            className='rounded'
+            alt='Placeholder Profile Picture'
+            width={100}
+            height={100}
+          />
+        </div>
+        <h1 className='petscare-brand col'>{userData.userName}</h1>
+      </div>
+      <table className='table table-hover'>
+        <tbody>
+          <tr>
+            <th scope='row'>
+              <BsCardChecklist className='mx-2 fs-4' />
+              Pseudonyme
+            </th>
+            <td colSpan='2'>{userData.userName}</td>
+          </tr>
+          <tr>
+            <th scope='row'>
+              <FaAddressCard className='mx-2 fs-4' />
+              Nom
+            </th>
+            <td colSpan='2'>
+              {userData.firstName} {userData.lastName}
+            </td>
+          </tr>
+          <tr>
+            <th scope='row'>
+              <MdEmail className='mx-2 fs-4' />
+              Email
+            </th>
+            <td colSpan='2'>{userData.email}</td>
+          </tr>
+          <tr>
+            <th scope='row'>
+              <FaBirthdayCake className='mx-2 fs-4' />
+              Date de naissance
+            </th>
+            <td colSpan='2'>
+              {dayjs(userData.birthDate.date).format('DD/MM/YYYY')}
+            </td>
+          </tr>
+          <tr>
+            <th scope='row'>
+              <GiPawHeart className='mx-2 fs-4' />
+              Date de création du compte
+            </th>
+            <td colSpan='2'>
+              {dayjs(userData.createdAt.date).format('DD/MM/YYYY')}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div className='row my-4 align-items-center'>
+        <div className='col'>
+          <button className='btn btn-sm btn-info'>
+            <FaPenFancy className='mx-2 fs-4' />
+            Modifier mes informations
+          </button>
+        </div>
+        <div className='col'>
+          <button className='btn btn-sm btn-info'>
+            <MdOutlinePassword className='mx-2 fs-4' />
+            Modifier mon mot de passe
+          </button>
+        </div>
+        <div className='col'>
+          <button className='btn btn-sm btn-danger'>
+            <FaTrashCan className='mx-2 fs-4' />
+            Supprimer mon compte
+          </button>
         </div>
       </div>
-      <UserCarousel />
     </>
   );
 }
