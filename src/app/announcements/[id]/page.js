@@ -8,11 +8,10 @@ import AnnouncementDisplaySkeleton from './components/AnnouncementDisplaySkeleto
 
 async function fetchAnnouncementData(id) {
   if (!id) throw new Error('ID manquant');
-
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/public/api/announcements/${id}`
+    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/public/api/get-data/${id}`
   );
-  return JSON.parse(response.data.data['announcementData']);
+  return JSON.parse(response.data.data);
 }
 
 export default function Announcement() {

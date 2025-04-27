@@ -3,8 +3,10 @@ import React from 'react';
 import { FaBackward, FaEye, FaPrint, FaShare } from 'react-icons/fa';
 import MapComponent from '../../new/components/MapComponent';
 import AnnouncementViewCounter from './AnnouncementViewCounter';
+import { useUser } from '@/app/contexts/UserContext';
 
 export default function AnnouncementDisplay({ announcement }) {
+  const { user } = useUser();
   return (
     <div className='container-fluid d-flex flex-column'>
       <div className='row my-4 p-5 align-items-center petscare-background'>
@@ -20,24 +22,22 @@ export default function AnnouncementDisplay({ announcement }) {
           //? Center
         }
         <div className='col text-center'>
-          <h1 className='petscare-brand'>{announcement.type_label}</h1>
-          <h6 className='petscare-brand text-muted'>
-            {announcement.status_label}
-          </h6>
-          <h5 className='text-muted'>Posté par : {announcement.user_name}</h5>
+          <h1 className='petscare-brand'>{announcement.type}</h1>
+          <h6 className='petscare-brand text-muted'>{announcement.status}</h6>
+          <h5 className='text-muted'>Posté par : {announcement.userId}</h5>
         </div>
         {
           //? Right
         }
         <div className='col-1 d-flex flex-column align-items-center'>
           <FaEye />
-          <span>{announcement.views_count}</span>
+          <span>{announcement.viewsCount}</span>
         </div>
       </div>
 
       <div className='container mt-3 d-flex flex-column petscare-announce justify-content-between'>
         <h3 className='petscare-brand'>
-          Informations à propos de {announcement.pet_name}
+          Informations à propos de {announcement.petId}
         </h3>
         <div className=' flex-fill'>
           <p className='text-white'>{announcement.content}</p>
@@ -49,7 +49,7 @@ export default function AnnouncementDisplay({ announcement }) {
           <MapComponent
             latitude={announcement.latitude}
             longitude={announcement.longitude}
-            petName={announcement.pet_name}
+            petName={announcement.petId}
           />
         </div>
 
@@ -71,7 +71,7 @@ export default function AnnouncementDisplay({ announcement }) {
           </div>
         </div>
       </div>
-      <AnnouncementViewCounter announcementId={announcement.id} />
+      {/* <AnnouncementViewCounter announcementId={announcement.id} userId={us} /> */}
     </div>
   );
 }

@@ -13,8 +13,8 @@ export default function LostAnnouncementForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     content: '',
-    starting_date: '',
-    pet_ids: [],
+    startingDate: '',
+    petIds: [],
     location: '',
     city: '',
     postcode: '',
@@ -29,15 +29,15 @@ export default function LostAnnouncementForm() {
 
   const createAnnouncement = async (data) => {
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/private/api/announcements/create-announcement`,
-      { ...data, type: 'lost', user_id: user.id },
+      `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/private/api/create`,
+      { ...data, type: 1, userId: user.id },
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('authToken')}`,
         },
       }
     );
-    return response.data.data.announcementCreated;
+    return response.data.data;
   };
 
   const mutation = useMutation({
@@ -75,12 +75,12 @@ export default function LostAnnouncementForm() {
 
   const handleChangeDate = (e) => {
     const newDate = new Date(e.target.value).toISOString().split('T')[0];
-    setFormData((prev) => ({ ...prev, starting_date: newDate }));
+    setFormData((prev) => ({ ...prev, startingDate: newDate }));
   };
 
   const handlePetSelectChange = (selectedOptions) => {
     const selectedPetIds = selectedOptions.map((option) => option.value);
-    setFormData((prev) => ({ ...prev, pet_ids: selectedPetIds }));
+    setFormData((prev) => ({ ...prev, petIds: selectedPetIds }));
   };
 
   const handleSubmit = (e) => {

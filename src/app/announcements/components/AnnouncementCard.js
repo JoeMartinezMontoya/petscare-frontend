@@ -23,7 +23,7 @@ export default function AnnouncementCard({ announcement, fullView = true }) {
         />
         <div className='card-header d-flex align-items-center justify-content-between'>
           <h5 className='card-title my-0 col-8 petscare-brand'>
-            {announcement.type_label}
+            {announcement.type}
           </h5>
           {fullView && (
             <div className='col-4 d-flex flex-column text-center'>
@@ -39,7 +39,7 @@ export default function AnnouncementCard({ announcement, fullView = true }) {
         </div>
         <div className='card-body'>
           <h4 className='petscare-brand'>{announcement.title}</h4>
-          <p className='card-text fs-6'>{announcement.content_excerpt}</p>
+          <p className='card-text fs-6'>{announcement.content}</p>
         </div>
         <div className='card-footer'>
           <div className='row justify-content-between align-items-center'>
@@ -51,7 +51,7 @@ export default function AnnouncementCard({ announcement, fullView = true }) {
             </div>
             <div className='col d-flex flex-column align-items-center'>
               <FaEye />
-              <small> {announcement.views_count}</small>
+              <small> {announcement.viewsCount}</small>
             </div>
             <div className='col-2 d-flex justify-content-end'>
               <Link

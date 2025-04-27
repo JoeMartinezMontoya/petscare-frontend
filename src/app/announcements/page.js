@@ -8,10 +8,9 @@ import AnnouncementCardSkeleton from './components/AnnouncementCardSkeleton';
 
 async function fetchAnnouncements() {
   const response = await axios.get(
-    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/public/api/announcements`
+    `${process.env.NEXT_PUBLIC_ANNOUNCEMENTS_API_URL}/public/api/get-all`
   );
-
-  return JSON.parse(response.data.data['announcements']);
+  return JSON.parse(response.data.data);
 }
 
 export default function AnnouncementsPage() {
