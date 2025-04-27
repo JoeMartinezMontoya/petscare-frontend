@@ -23,20 +23,24 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const apiUrl = process.env.NEXT_PUBLIC_AUTH_API_URL;
     const response = await axios
-      .post(`${apiUrl}/api/auth/login-user`, {
-        email: formData.email,
-        password: formData.password,
-      })
+      .post(
+        `${process.env.NEXT_PUBLIC_AUTH_API_URL}/public/api/auth/login-user`,
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      )
       .then((json) => {
-        login(json.data.token);
-        addFlashMessage(json.message || 'Message test', 'success');
+        login(json.data.userData.id, json.data.token);
+        addFlashMessage(json.message || 'Bonjour !', 'success');
         router.push('/');
       })
       .catch((err) => {
         const errorMessage =
           err.response?.data?.error || 'Une erreur inattendue est survenue.';
+
+        console.log(err);
 
         setFormData({ email: '', password: '' });
         addFlashMessage(errorMessage, 'danger');
@@ -70,8 +74,8 @@ export default function Login() {
 
         <form onSubmit={handleSubmit}>
           <div className='mb-3'>
-            <label htmlFor='email' className='form-label'>
-              Email :
+            <label htmlFor='email' className='form-label petscare-brand'>
+              Email
             </label>
             <div className='input-group'>
               <input
@@ -88,8 +92,8 @@ export default function Login() {
           </div>
 
           <div className='mb-3'>
-            <label htmlFor='password' className='form-label'>
-              Mot de passe :
+            <label htmlFor='password' className='form-label petscare-brand'>
+              Mot de passe
             </label>
             <div className='input-group'>
               <input
