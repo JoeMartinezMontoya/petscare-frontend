@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import LastPetsLoading from './LastPetsLoading';
+import Image from 'next/image';
 
 const randomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -38,14 +39,16 @@ export default function LastPets() {
           {pets.map((pet) => (
             <div key={pet.id} className='col-2'>
               <div className='card petscare-background petscare-last-pets-card'>
-                <img
+                <Image
                   className='card-img-top'
                   src={`${
-                    pet.race === 1
+                    pet.race == 1
                       ? 'https://placedog.net/'
                       : 'https://placecats.com/'
                   }${randomInt(600, 650)}/600`}
                   alt={pet.name}
+                  width={400}
+                  height={200}
                 />
                 <div className='card-body'>
                   <h5 className='card-title text-center petscare-brand'>

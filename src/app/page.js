@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import Stats from './components/Stats';
-import LastPets from './components/lastPets';
+import LastPets from './components/LastPets';
 
 export default function Home() {
   return (

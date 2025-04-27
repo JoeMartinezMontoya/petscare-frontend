@@ -20,6 +20,20 @@ const nextConfig = {
         pathname: '/**',
         search: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'placecats.com',
+        port: '',
+        pathname: '/**',
+        search: '',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placedog.net',
+        port: '',
+        pathname: '/**',
+        search: '',
+      },
     ],
   },
 };
